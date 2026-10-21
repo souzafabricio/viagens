@@ -15,6 +15,15 @@ import { SEED_ILHABELA } from './seed-ilhabela.js';
 
 const EXTENSO = ['zero', 'um', 'dois', 'três', 'quatro', 'cinco', 'seis', 'sete', 'oito', 'nove', 'dez'];
 
+const CONECTIVOS = new Set(['a', 'o', 'e', 'de', 'da', 'do', 'das', 'dos', 'em', 'na', 'no', 'para', 'com']);
+
+// Rótulo curto do chip: até duas palavras, sem conectivo solto no final.
+function rotuloChip(titulo) {
+  const palavras = titulo.split(' ').slice(0, 2);
+  while (palavras.length > 1 && CONECTIVOS.has(palavras[palavras.length - 1].toLowerCase())) palavras.pop();
+  return palavras.join(' ');
+}
+
 function vazioHtml() {
   return '<div class="empty-state big">' +
     '<h3>Esta viagem ainda não tem roteiro</h3>' +
@@ -69,7 +78,7 @@ export function renderGuia() {
   const idxHoje = indiceDiaHoje(state.trip);
   jump.innerHTML = r.dias.map((d, i) =>
     `<a href="#guia-${esc(d.id)}" class="chip${i === idxHoje ? ' chip-active' : ''}">${esc(d.titulo.split('—')[0].trim())}</a>`)
-    .concat((r.secoes || []).map((s) => `<a href="#${esc(s.id)}" class="chip">${esc(s.titulo.split(' ').slice(0, 2).join(' '))}</a>`))
+    .concat((r.secoes || []).map((s) => `<a href="#${esc(s.id)}" class="chip">${esc(rotuloChip(s.titulo))}</a>`))
     .join('');
 
   const n = r.dias.length;
