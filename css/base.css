@@ -1,0 +1,45 @@
+/* Reset leve + tipografia base */
+
+*, *::before, *::after { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+html { overflow-x: clip; scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  /* clip (não hidden): hidden transformaria o body em contêiner de rolagem e quebraria o position: sticky */
+  overflow-x: clip;
+  transition: background-color .25s, color .25s;
+}
+body.no-scroll { overflow: hidden; }
+
+h1, h2, h3, h4, p { margin: 0; }
+h1, h2, h3 { text-wrap: balance; }
+.serif { font-family: var(--font-serif); font-weight: 450; letter-spacing: -.01em; }
+
+a { color: var(--sea); }
+img { max-width: 100%; display: block; }
+
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+button:disabled { cursor: default; }
+input::placeholder, textarea::placeholder { color: var(--muted); opacity: 1; }
+
+:focus-visible { outline: 2px solid var(--sand); outline-offset: 2px; border-radius: 6px; }
+
+svg { flex: none; }
+
+.hidden { display: none !important; }
+[hidden] { display: none !important; }
+.sm { font-size: 13px; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}

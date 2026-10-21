@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Viagens">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0f2c33">
+<meta name="description" content="Listas, roteiro e diário das viagens de Fabrício e Carol.">
+<title>Viagem dos Tobs</title>
+
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%230f2c33'/%3E%3Cpath d='M12 4c-3.3 0-6 2.7-6 6 0 4.5 6 10 6 10s6-5.5 6-10c0-3.3-2.7-6-6-6Z' fill='%23d3a15a'/%3E%3Ccircle cx='12' cy='10' r='2.2' fill='%230f2c33'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+<!-- Tema aplicado antes da pintura, para não piscar claro no modo escuro -->
+<script>
+  (function(){
+    var p = null; try { p = localStorage.getItem('travelTheme'); } catch(e) {}
+    var dark = p ? p === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+    document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+  })();
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Inter:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
+
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/layout.css">
+<link rel="stylesheet" href="css/features.css">
+
+<!-- Bibliotecas externas: se falharem (offline/portal cativo), o app segue em modo local -->
+<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+<script type="module" src="js/main.js"></script>
+</head>
+<body>
+
+<!-- ============ TELA: quem está acessando ============ -->
+<div id="screenLogin" class="screen brand-bg">
+  <div class="login">
+    <p class="login-mark">Viagem dos Tobs</p>
+    <h1 class="serif">Quem está acessando?</h1>
+    <p class="login-lead">Suas marcações ficam de uma cor, as da outra pessoa de outra — e os dois veem tudo em tempo real.</p>
+    <div class="login-choices">
+      <button type="button" class="choice choice-f" data-person="fabricio"><span class="choice-avatar">F</span>Fabrício</button>
+      <button type="button" class="choice choice-c" data-person="carol"><span class="choice-avatar">C</span>Carol</button>
+    </div>
+    <button type="button" id="loginCancelBtn" class="link-light hidden">Cancelar</button>
+  </div>
+</div>
+
+<!-- ============ TELA: viagens ============ -->
+<div id="screenTrips" class="screen">
+  <header class="hero brand-bg hero-sm">
+    <div class="hero-top">
+      <button type="button" id="tripsBackBtn" class="link-light hidden">&larr; Voltar</button>
+      <button type="button" class="link-light" data-action="trocar-usuario">Trocar usuário</button>
+    </div>
+    <p class="eyebrow" id="tripsKicker">Viagem dos Tobs</p>
+    <h1 class="serif">Suas viagens</h1>
+  </header>
+
+  <main class="wrap">
+    <div id="tripList" class="trip-list"></div>
+    <button type="button" id="tripNewToggleBtn" class="btn-dashed">+ Nova viagem</button>
+
+    <form id="tripForm" class="card form hidden" novalidate>
+      <h2 class="form-title serif" id="tripFormTitle">Nova viagem</h2>
+
+      <label class="field">
+        <span class="field-label">Nome da viagem</span>
+        <input type="text" id="tripNome" placeholder="ex: Ilhabela" required autocomplete="off">
+      </label>
+      <label class="field">
+        <span class="field-label">Destino</span>
+        <input type="text" id="tripLocal" placeholder="ex: Ilhabela, SP" autocomplete="off">
+      </label>
+      <div class="field-row">
+        <label class="field"><span class="field-label">Ida</span><input type="date" id="tripInicio"></label>
+        <label class="field"><span class="field-label">Volta</span><input type="date" id="tripFim"></label>
+      </div>
+
+      <fieldset class="fieldset">
+        <legend>Hospedagem</legend>
+        <p class="hint">Usada para a previsão do tempo e para gerar o tópico “Onde Comprar” com lojas próximas.</p>
+        <div class="map-row">
+          <button type="button" id="mapPickerOpenBtn" class="btn btn-ghost btn-sm">Escolher no mapa</button>
+          <span id="tripMapStatus" class="hint ok"></span>
+        </div>
+        <div class="field-row field-row-addr">
+          <label class="field"><span class="field-label">Bairro</span><input type="text" id="tripBairro" autocomplete="off"></label>
+          <label class="field"><span class="field-label">Cidade</span><input type="text" id="tripCidade" autocomplete="off"></label>
+          <label class="field field-uf"><span class="field-label">UF</span><input type="text" id="tripUf" maxlength="2" autocomplete="off"></label>
+        </div>
+      </fieldset>
+
+      <label class="field" id="tripCopyWrap">
+        <span class="field-label">Listas</span>
+        <select id="tripCopyFrom"><option value="">Começar com listas padrão</option></select>
+        <span class="hint">Copiar tópicos e itens de outra viagem (sem as marcações).</span>
+      </label>
+
+      <div class="form-actions">
+        <button type="button" id="tripFormCancel" class="btn btn-ghost">Cancelar</button>
+        <button type="submit" id="tripFormSubmit" class="btn btn-primary">Criar viagem</button>
+      </div>
+    </form>
+  </main>
+</div>
+
+<!-- ============ TELA: viagem selecionada ============ -->
+<div id="screenTrip" class="screen">
+  <header class="hero brand-bg">
+    <p class="eyebrow" id="heroKicker">Carregando…</p>
+    <h1 id="heroTitle" class="serif">Nossa viagem</h1>
+    <div class="hero-chips" id="heroChips"></div>
+    <div class="hero-progress">
+      <div class="bar bar-light"><i id="heroBar"></i></div>
+      <span id="heroProgressTxt"></span>
+    </div>
+  </header>
+
+  <div class="appbar" id="appbar">
+    <span class="appbar-title" id="appbarTitle"></span>
+    <span id="syncPill" class="sync-pill" role="status"><span class="dot"></span><span class="sync-txt"></span></span>
+    <button type="button" class="btn btn-sm btn-accent" data-action="mercado">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/></svg>
+      <span>Mercado</span>
+    </button>
+    <button type="button" id="whoami" class="avatar" data-action="menu" aria-haspopup="dialog">?</button>
+  </div>
+
+  <nav class="tabs" id="tabs" role="tablist" aria-label="Seções da viagem">
+    <button type="button" class="tab-btn" role="tab" data-tab="hoje">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      <span>Hoje</span>
+    </button>
+    <button type="button" class="tab-btn" role="tab" data-tab="guia">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 6v16l7-4 8 4 7-4V2l-7 4-8-4-7 4Z"/><path d="M8 2v16M16 6v16"/></svg>
+      <span>Guia</span>
+    </button>
+    <button type="button" class="tab-btn" role="tab" data-tab="conjunta">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></svg>
+      <span>Conjunta</span><span class="badge" hidden></span>
+    </button>
+    <button type="button" class="tab-btn" role="tab" data-tab="pessoal">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="14" rx="2"/><path d="M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3M9 21v1M15 21v1"/></svg>
+      <span>Pessoal</span><span class="badge" hidden></span>
+    </button>
+    <button type="button" class="tab-btn" role="tab" data-tab="diario">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg>
+      <span>Diário</span>
+    </button>
+  </nav>
+
+  <main class="wrap">
+    <section class="tab-panel" data-tab-panel="hoje" role="tabpanel"><div id="hojeConteudo"></div></section>
+
+    <section class="tab-panel" data-tab-panel="guia" role="tabpanel">
+      <nav class="guide-jump" id="guiaJump" aria-label="Índice do roteiro"></nav>
+      <div id="guiaConteudo"></div>
+    </section>
+
+    <section class="tab-panel" data-tab-panel="conjunta" role="tabpanel">
+      <div class="toolbar">
+        <input type="search" id="buscaConjunta" class="search" placeholder="Buscar item" autocomplete="off" aria-label="Buscar na lista conjunta">
+        <button type="button" id="filtroFaltaConjunta" class="chip" aria-pressed="false">Só o que falta</button>
+      </div>
+      <div id="topicosConjunta"></div>
+      <div class="new-topic">
+        <input type="text" id="topicoNomeConjunta" placeholder="Novo tópico conjunto (ex: Mercado, Praia)" aria-label="Nome do novo tópico conjunto">
+        <button type="button" id="topicoAddConjunta" class="btn btn-primary">Criar tópico</button>
+        <button type="button" id="topicoImportConjunta" class="btn btn-ghost">Importar JSON</button>
+      </div>
+    </section>
+
+    <section class="tab-panel" data-tab-panel="pessoal" role="tabpanel">
+      <div class="toolbar">
+        <input type="search" id="buscaPessoal" class="search" placeholder="Buscar item" autocomplete="off" aria-label="Buscar na lista pessoal">
+        <button type="button" id="filtroFaltaPessoal" class="chip" aria-pressed="false">Só o que falta</button>
+      </div>
+      <p class="panel-hint">Só você vê os itens desta aba.</p>
+      <div id="topicosPessoal"></div>
+      <div class="new-topic">
+        <input type="text" id="topicoNomePessoal" placeholder="Novo tópico pessoal (ex: Mala, Documentos)" aria-label="Nome do novo tópico pessoal">
+        <button type="button" id="topicoAddPessoal" class="btn btn-primary">Criar tópico</button>
+        <button type="button" id="topicoImportPessoal" class="btn btn-ghost">Importar JSON</button>
+      </div>
+    </section>
+
+    <section class="tab-panel" data-tab-panel="diario" role="tabpanel">
+      <p class="panel-hint">Escreva o que aconteceu e anexe uma foto. No fim, esta aba vira a linha do tempo de vocês dois, dia a dia.</p>
+      <div class="card compose" id="diarioForm">
+        <textarea id="dcTexto" rows="3" placeholder="O que aconteceu hoje?" aria-label="Texto da memória"></textarea>
+        <div class="compose-row">
+          <select id="dcDia" aria-label="Dia da viagem"></select>
+          <button type="button" class="btn btn-ghost btn-sm" id="dcFoto">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            <span>Foto</span>
+          </button>
+          <button type="button" class="btn btn-primary btn-sm" id="dcEnviar">Guardar</button>
+        </div>
+      </div>
+      <div id="diarioLista"></div>
+    </section>
+
+    <footer class="footer">
+      <span id="footerTrip">Viagem dos Tobs</span>
+      <span class="legend"><span><i class="dot-f"></i>Fabrício</span><span><i class="dot-c"></i>Carol</span></span>
+    </footer>
+  </main>
+</div>
+
+<!-- ============ MENU ============ -->
+<div id="menuSheet" class="modal-backdrop sheet-backdrop hidden" role="dialog" aria-modal="true" aria-label="Menu">
+  <div class="sheet">
+    <div class="sheet-handle" aria-hidden="true"></div>
+    <p id="menuUser" class="menu-user"></p>
+    <div class="menu-list">
+      <button type="button" class="menu-item" data-action="trocar-viagem">Trocar de viagem</button>
+      <button type="button" class="menu-item" data-action="editar-viagem">Editar esta viagem</button>
+      <button type="button" class="menu-item" data-action="limpar-meus">Limpar minhas marcações</button>
+      <button type="button" class="menu-item" data-action="trocar-usuario">Trocar usuário</button>
+    </div>
+    <div class="menu-theme">
+      <span>Tema</span>
+      <div class="segmented" role="group" aria-label="Tema">
+        <button type="button" data-theme-opt="auto">Auto</button>
+        <button type="button" data-theme-opt="light">Claro</button>
+        <button type="button" data-theme-opt="dark">Escuro</button>
+      </div>
+    </div>
+    <button type="button" class="btn btn-ghost btn-block" data-action="fechar-menu">Fechar</button>
+  </div>
+</div>
+
+<!-- ============ MODAIS ============ -->
+<div id="askModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="askTitle">
+  <div class="modal">
+    <h2 class="serif" id="askTitle">Confirmar</h2>
+    <p class="modal-msg" id="askMsg"></p>
+    <input type="text" id="askInput" class="input hidden" aria-label="Valor">
+    <div class="modal-actions">
+      <button type="button" id="askCancel" class="btn btn-ghost">Cancelar</button>
+      <button type="button" id="askOk" class="btn btn-primary">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<div id="importJsonModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="importJsonTitle">
+  <div class="modal">
+    <h2 class="serif" id="importJsonTitle">Importar lista</h2>
+    <p class="modal-msg" id="importJsonMsg"></p>
+    <textarea id="importJsonInput" class="input mono" rows="9" placeholder='{"mala": ["camiseta", "chinelo"]}' data-autofocus></textarea>
+    <div class="modal-actions">
+      <button type="button" id="importJsonCancel" class="btn btn-ghost">Cancelar</button>
+      <button type="button" id="importJsonOk" class="btn btn-primary">Importar</button>
+    </div>
+  </div>
+</div>
+
+<div id="mapPickerModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="mapPickerTitle">
+  <div class="modal modal-wide">
+    <h2 class="serif" id="mapPickerTitle">Onde vocês vão ficar?</h2>
+    <p class="modal-msg">Toque no mapa ou arraste o pino até o endereço da hospedagem.</p>
+    <div id="mapPickerMap" class="map"></div>
+    <p id="mapPickerAddr" class="map-addr"></p>
+    <div class="modal-actions">
+      <button type="button" id="mapPickerCancelBtn" class="btn btn-ghost">Cancelar</button>
+      <button type="button" id="mapPickerConfirmBtn" class="btn btn-primary" disabled>Usar este local</button>
+    </div>
+  </div>
+</div>
+
+<div id="fotoViewer" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="fotoViewerTitle">
+  <div class="modal">
+    <h2 class="serif" id="fotoViewerTitle">Foto</h2>
+    <img id="fotoViewerImg" class="viewer-img" alt="">
+    <div class="modal-actions">
+      <button type="button" id="fotoViewerRemove" class="btn btn-ghost danger">Remover foto</button>
+      <button type="button" id="fotoViewerClose" class="btn btn-primary">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODO MERCADO ============ -->
+<div id="marketMode" class="market hidden" role="dialog" aria-modal="true" aria-labelledby="mkTitle">
+  <header class="market-head">
+    <div class="market-title">
+      <h2 class="serif" id="mkTitle">Modo mercado</h2>
+      <span class="mk-count" id="mkCount"></span>
+    </div>
+    <button type="button" class="btn btn-ghost btn-sm" id="mkClose">Fechar</button>
+  </header>
+  <div class="bar market-bar"><i id="mkBar"></i></div>
+  <div class="market-tools">
+    <button type="button" class="chip" id="mkFiltroTodos" aria-pressed="true">Tudo</button>
+    <button type="button" class="chip" id="mkFiltroMeus" aria-pressed="false">Só os meus</button>
+    <span class="market-sep"></span>
+    <button type="button" class="chip" id="mkDividir">Dividir entre nós</button>
+    <button type="button" class="chip" id="mkLimparDivisao">Desfazer divisão</button>
+  </div>
+  <div class="market-body" id="mkBody"></div>
+</div>
+
+<input type="file" id="fotoInput" accept="image/*" class="hidden">
+<div id="toastContainer" class="toasts" aria-live="polite"></div>
+
+</body>
+</html>
