@@ -35,8 +35,7 @@ function acoesDoDia(dia) {
   const acoes = [];
   if (destaque) acoes.push(`<a class="chip" href="${esc(mapsUrl(destaque.b + ' ' + cidade))}" target="_blank" rel="noopener">${ICON.pin} Abrir no mapa</a>`);
   tels.forEach((t) => acoes.push(`<a class="chip" href="tel:${t.replace(/\D/g, '')}">${ICON.phone} ${esc(t)}</a>`));
-  acoes.push(`<button type="button" class="chip" data-action="mercado">${ICON.cart} Modo mercado</button>`);
-  return `<div class="chip-row">${acoes.join('')}</div>`;
+  return acoes.length ? `<div class="chip-row">${acoes.join('')}</div>` : '';
 }
 
 function cardPendencias() {

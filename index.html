@@ -139,10 +139,6 @@
   <div class="appbar" id="appbar">
     <span class="appbar-title" id="appbarTitle"></span>
     <span id="syncPill" class="sync-pill" role="status"><span class="dot"></span><span class="sync-txt"></span></span>
-    <button type="button" class="btn btn-sm btn-accent" data-action="mercado">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/></svg>
-      <span>Mercado</span>
-    </button>
     <button type="button" id="whoami" class="avatar" data-action="menu" aria-haspopup="dialog">?</button>
   </div>
 
@@ -297,24 +293,6 @@
       <button type="button" id="fotoViewerClose" class="btn btn-primary">Fechar</button>
     </div>
   </div>
-</div>
-
-<!-- ============ MODO MERCADO ============ -->
-<div id="marketMode" class="market hidden" role="dialog" aria-modal="true" aria-labelledby="mkTitle">
-  <header class="market-head">
-    <div class="market-title">
-      <h2 class="serif" id="mkTitle">Modo mercado</h2>
-      <span class="mk-count" id="mkCount"></span>
-    </div>
-    <button type="button" class="btn btn-ghost btn-sm" id="mkClose">Fechar</button>
-  </header>
-  <div class="bar market-bar"><i id="mkBar"></i></div>
-  <form class="market-tools" id="mkAddForm" role="search" autocomplete="off">
-    <input type="search" id="mkBusca" class="input mk-busca" placeholder="Buscar ou adicionar item" aria-label="Buscar ou adicionar item" enterkeyhint="done">
-    <input type="text" id="mkQtd" class="input mk-qtd" placeholder="Qtd" aria-label="Quantidade">
-    <button type="submit" id="mkAdd" class="btn btn-primary btn-sm" disabled>Adicionar</button>
-  </form>
-  <div class="market-body" id="mkBody"></div>
 </div>
 
 <input type="file" id="fotoInput" accept="image/*" class="hidden">

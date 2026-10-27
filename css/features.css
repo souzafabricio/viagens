@@ -285,69 +285,6 @@
 .memory p { font-size: 14.5px; white-space: pre-wrap; overflow-wrap: anywhere; }
 .memory .mem-del { position: absolute; top: 8px; right: 8px; }
 
-/* =========================== Modo mercado =========================== */
-.market {
-  position: fixed; inset: 0; z-index: 85;
-  display: flex; flex-direction: column; background: var(--paper);
-  animation: screenIn .3s var(--ease) both;
-}
-.market-head {
-  display: flex; align-items: center; gap: 12px;
-  padding: calc(14px + var(--safe-t)) var(--gutter) 12px; background: var(--card);
-}
-.market-title { flex: 1; display: flex; align-items: baseline; gap: 10px; }
-.market-title h2 { font-size: 21px; }
-.mk-count { font-size: 13px; font-weight: 600; color: var(--muted); font-variant-numeric: tabular-nums; }
-.market-bar { height: 3px; border-radius: 0; }
-.market-tools {
-  display: flex; gap: 8px; align-items: center; margin: 0;
-  padding: 10px var(--gutter); background: var(--card); border-bottom: 1px solid var(--line);
-}
-.market-tools .mk-busca { flex: 1; }
-.market-tools .mk-qtd { flex: 0 0 64px; }
-.market-tools .btn { flex: none; min-height: 42px; }
-.market-body { flex: 1; overflow-y: auto; padding: 4px var(--gutter) calc(32px + var(--safe-b)); }
-.market-body > * { max-width: 640px; margin-left: auto; margin-right: auto; }
-.mk-aisle { margin-top: 20px; }
-.mk-aisle h3 {
-  display: flex; justify-content: space-between; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid var(--line);
-  font-size: 11.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--sand-strong);
-}
-.mk-aisle h3 span { color: var(--muted); }
-.mk-item {
-  display: flex; align-items: center; gap: 2px; margin-bottom: 8px; padding-right: 6px;
-  border: 1px solid var(--line); border-radius: var(--r); background: var(--card); box-shadow: var(--shadow-sm);
-  transition: background-color .15s, opacity .2s;
-}
-.mk-toggle {
-  flex: 1; min-width: 0; display: flex; align-items: center; gap: 14px;
-  padding: 16px 8px 16px 14px; border: 0; background: none; text-align: left; color: inherit;
-  font-size: 19px; font-weight: 500; transition: transform .12s var(--ease);
-}
-.mk-toggle:active { transform: scale(.985); }
-.mk-item .icon-btn { width: 40px; height: 40px; }
-.mk-item .icon-btn svg { width: 17px; height: 17px; }
-.mk-edit { flex: 1; min-width: 0; display: flex; gap: 8px; padding: 10px 4px 10px 10px; }
-.mk-edit input {
-  min-width: 0; min-height: 42px; padding: 8px 10px; font-size: 16px;
-  border: 1px solid var(--sand); border-radius: 10px; background: var(--card); color: var(--ink);
-}
-.mk-edit .mk-edit-nome { flex: 1; }
-.mk-edit .mk-edit-qtd { flex: 0 0 64px; }
-.mk-box { width: 28px; height: 28px; flex: none; border: 2.5px solid var(--sand); border-radius: 8px; }
-.mk-item.done { opacity: .4; }
-.mk-item.done .mk-nome { text-decoration: line-through; }
-.mk-item.done .mk-box {
-  background: var(--sand) no-repeat center / 16px
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E");
-}
-.mk-nome { flex: 1; min-width: 0; }
-.mk-qty { flex: none; font-size: 14px; font-weight: 700; color: var(--sand-strong); }
-.mk-empty { padding: 50px 20px; text-align: center; color: var(--muted); font-size: 15px; }
-.mk-empty small { font-size: 13.5px; }
-.mk-done { padding: 56px 20px; text-align: center; font-family: var(--font-serif); font-size: 26px; color: var(--ok); }
-.mk-done small { font-size: 16px; color: var(--soft); }
-
 /* =========================== Mapa =========================== */
 .map { height: 300px; border-radius: var(--r); overflow: hidden; border: 1px solid var(--line); }
 .map-addr { min-height: 20px; margin-top: 12px; font-size: 13px; color: var(--soft); }

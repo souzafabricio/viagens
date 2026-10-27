@@ -126,10 +126,6 @@
   #screenTrip .wrap { padding-bottom: 48px; }
   .hero { padding-top: calc(48px + var(--safe-t)); padding-bottom: 34px; }
 }
-@media (max-width: 380px) {
-  .appbar .btn-accent span { display: none; }
-}
-
 .tab-panel { display: none; padding-top: 18px; }
 .tab-panel.active { display: block; animation: screenIn .35s var(--ease) both; }
 .panel-hint { margin: 0 0 14px; font-size: 13px; color: var(--muted); }

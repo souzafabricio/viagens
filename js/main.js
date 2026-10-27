@@ -10,7 +10,6 @@ import { supa, drenarOutbox, atualizarSyncPill, avisarQuandoSincronizar, salvarC
 import { toast, showScreen, mostrarAba, abrirModal, fecharModal, aplicarTema } from './ui.js';
 import { renderTopicos, contar, limparMinhasMarcas } from './lists.js';
 import './import-json.js';
-import { abrirMercado, renderMercado } from './market.js';
 import { renderGuia } from './guide.js';
 import { renderHoje } from './today.js';
 import { renderDiario } from './diary.js';
@@ -21,7 +20,7 @@ import { abrirViagens, editarViagemAtual, abrirViagemInicial, atualizarHero } fr
 /* ---------------- O que re-renderizar quando algo muda ---------------- */
 
 function renderTudo() {
-  renderTopicos();   // dispara lists:changed → progresso, badges, hoje, mercado
+  renderTopicos();   // dispara lists:changed → progresso, badges, hoje
   renderGuia();
   renderDiario();
 }
@@ -45,7 +44,6 @@ on('lists:changed', () => {
   atualizarProgresso();
   salvarCache();
   if (state.tab === 'hoje') renderHoje();
-  renderMercado();
 });
 on('trip:changed', () => { renderTudo(); atualizarHero(); });
 on('data:loaded', renderTudo);
@@ -97,7 +95,6 @@ $('loginCancelBtn').addEventListener('click', () => { if (telaAntesDoLogin) show
 /* ---------------- Ações globais (data-action) ---------------- */
 
 const ACOES = {
-  mercado: () => { fecharModal('menuSheet', { silencioso: true }); abrirMercado(); },
   menu: () => abrirModal('menuSheet'),
   'trocar-viagem': () => { fecharModal('menuSheet', { silencioso: true }); abrirViagens(); },
   'editar-viagem': () => { fecharModal('menuSheet', { silencioso: true }); editarViagemAtual(); },

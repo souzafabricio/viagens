@@ -12,7 +12,7 @@ css/
   base.css            reset e tipografia
   components.css      botões, chips, campos, cartões, modais, toasts
   layout.css          telas, hero, barra fixa, abas (inferior no celular, topo no desktop)
-  features.css        listas, Hoje, Guia, Diário, Modo mercado, viagens
+  features.css        listas, Hoje, Guia, Diário, viagens
 js/
   main.js             boot, eventos globais, o que re-renderizar quando o estado muda
   config.js           Supabase, tabelas, pessoas, chaves do localStorage
@@ -21,7 +21,6 @@ js/
   realtime.js         carga da viagem e inscrições realtime
   ui.js               toasts, modais (Esc/fundo), confirmar/perguntar, telas, abas, tema
   lists.js            tópicos e itens (Conjunta/Pessoal)
-  market.js           Modo mercado
   guide.js            aba Guia (+ seed-ubatuba.js, seed-ilhabela.js)
   today.js, weather.js  aba Hoje e previsão (Open-Meteo)
   diary.js            aba Diário
