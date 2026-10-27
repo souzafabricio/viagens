@@ -9,7 +9,7 @@ import { state, emit } from './state.js';
 import { TABLES } from './config.js';
 import { $, esc, clone } from './utils.js';
 import { enfileirar, salvarCache } from './db.js';
-import { toast } from './ui.js';
+import { toast, confirmar } from './ui.js';
 import { indiceDiaHoje } from './dates.js';
 import { SEED_ILHABELA } from './seed-ilhabela.js';
 import { SEED_UBATUBA } from './seed-ubatuba.js';
@@ -31,13 +31,29 @@ function rotuloChip(titulo) {
   return palavras.join(' ');
 }
 
+// Um botão por semente. 'primeiro' recebe destaque só no estado vazio.
+function botoesSemente(destacarPrimeiro) {
+  return Object.entries(SEMENTES).map(([chave, semente], i) =>
+    `<button type="button" class="btn ${destacarPrimeiro && i === 0 ? 'btn-primary' : ''}" data-seed="${chave}">` +
+    `Importar roteiro de ${esc(semente.rotulo)}</button>`).join(' ');
+}
+
 function vazioHtml() {
   return '<div class="empty-state big">' +
     '<h3>Esta viagem ainda não tem roteiro</h3>' +
     '<p>O roteiro fica salvo por viagem — cada destino tem o seu. Dá para começar com um pronto e editar depois.</p>' +
-    Object.entries(SEMENTES).map(([chave, s], i) =>
-      `<button type="button" class="btn ${i === 0 ? 'btn-primary' : ''}" data-seed="${chave}">Importar roteiro de ${esc(s.rotulo)}</button>`).join(' ') +
+    botoesSemente(true) +
     '</div>';
+}
+
+// Trocar o roteiro de uma viagem que já tem um: é assim que a mesma viagem
+// muda de destino sem perder listas, diário e fotos, que são por viagem_id.
+function trocarHtml() {
+  return '<section class="guide-section" id="guia-trocar">' +
+    '<h2 class="section-title">Trocar roteiro</h2>' +
+    '<div class="card info-box"><p class="note">Substitui o roteiro desta viagem por um pronto. ' +
+    'Listas, diário e fotos não são afetados — só o conteúdo do Guia.</p>' +
+    botoesSemente(false) + '</div></section>';
 }
 
 function diaHtml(d, i, idxHoje) {
@@ -95,6 +111,7 @@ export function renderGuia() {
     r.dias.map((d, i) => diaHtml(d, i, idxHoje)).join('') + '</section>';
   html += (r.secoes || []).map(secaoHtml).join('');
   if (r.nota) html += `<p class="note">${r.nota}</p>`;
+  html += trocarHtml();
   cont.innerHTML = html;
 }
 
@@ -104,9 +121,16 @@ export function salvarRoteiro() {
   enfileirar(TABLES.roteiro, 'upsert', { viagem_id: state.trip.id, conteudo: state.roteiro });
 }
 
-function importarSemente(chave) {
+async function importarSemente(chave) {
   const semente = SEMENTES[chave];
   if (!state.trip || !semente) return;
+  // Já existe roteiro: confirmar antes de sobrescrever.
+  if (state.roteiro && state.roteiro.dias && state.roteiro.dias.length) {
+    const ok = await confirmar(
+      `O roteiro atual desta viagem será substituído pelo de ${semente.rotulo}. Listas, diário e fotos não mudam.`,
+      { titulo: 'Trocar roteiro?', okTexto: 'Trocar', perigo: false });
+    if (!ok) return;
+  }
   state.roteiro = clone(semente.dados);
   salvarRoteiro();
   emit('roteiro:changed');
