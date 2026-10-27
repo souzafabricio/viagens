@@ -1,6 +1,6 @@
 // Service worker — app shell offline + bibliotecas do CDN em cache.
 // Ao mudar qualquer arquivo do app, suba a versão abaixo.
-const VERSION = 'v3';
+const VERSION = 'v4';
 const SHELL = 'viagem-tobs-shell-' + VERSION;
 const LIBS = 'viagem-tobs-libs-' + VERSION;
 
@@ -9,7 +9,7 @@ const APP_SHELL = [
   'css/tokens.css', 'css/base.css', 'css/components.css', 'css/layout.css', 'css/features.css',
   'js/main.js', 'js/config.js', 'js/state.js', 'js/utils.js', 'js/dates.js', 'js/db.js', 'js/ui.js',
   'js/icons.js', 'js/photos.js', 'js/lists.js', 'js/import-json.js', 'js/market.js', 'js/guide.js',
-  'js/seed-ilhabela.js', 'js/weather.js', 'js/today.js', 'js/diary.js', 'js/realtime.js',
+  'js/seed-ilhabela.js', 'js/seed-ubatuba.js', 'js/weather.js', 'js/today.js', 'js/diary.js', 'js/realtime.js',
   'js/trips.js', 'js/places.js',
 ];
 

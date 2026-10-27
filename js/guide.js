@@ -12,6 +12,13 @@ import { enfileirar, salvarCache } from './db.js';
 import { toast } from './ui.js';
 import { indiceDiaHoje } from './dates.js';
 import { SEED_ILHABELA } from './seed-ilhabela.js';
+import { SEED_UBATUBA } from './seed-ubatuba.js';
+
+// Sementes disponíveis no estado vazio. A chave vai no data-seed do botão.
+const SEMENTES = {
+  ubatuba: { rotulo: 'Ubatuba', dados: SEED_UBATUBA },
+  ilhabela: { rotulo: 'Ilhabela', dados: SEED_ILHABELA },
+};
 
 const EXTENSO = ['zero', 'um', 'dois', 'três', 'quatro', 'cinco', 'seis', 'sete', 'oito', 'nove', 'dez'];
 
@@ -27,8 +34,10 @@ function rotuloChip(titulo) {
 function vazioHtml() {
   return '<div class="empty-state big">' +
     '<h3>Esta viagem ainda não tem roteiro</h3>' +
-    '<p>O roteiro fica salvo por viagem — cada destino tem o seu. Dá para começar com o de Ilhabela e editar depois.</p>' +
-    '<button type="button" class="btn btn-primary" id="btnImportarSeed">Importar roteiro de Ilhabela</button></div>';
+    '<p>O roteiro fica salvo por viagem — cada destino tem o seu. Dá para começar com um pronto e editar depois.</p>' +
+    Object.entries(SEMENTES).map(([chave, s], i) =>
+      `<button type="button" class="btn ${i === 0 ? 'btn-primary' : ''}" data-seed="${chave}">Importar roteiro de ${esc(s.rotulo)}</button>`).join(' ') +
+    '</div>';
 }
 
 function diaHtml(d, i, idxHoje) {
@@ -95,16 +104,18 @@ export function salvarRoteiro() {
   enfileirar(TABLES.roteiro, 'upsert', { viagem_id: state.trip.id, conteudo: state.roteiro });
 }
 
-function importarIlhabela() {
-  if (!state.trip) return;
-  state.roteiro = clone(SEED_ILHABELA);
+function importarSemente(chave) {
+  const semente = SEMENTES[chave];
+  if (!state.trip || !semente) return;
+  state.roteiro = clone(semente.dados);
   salvarRoteiro();
   emit('roteiro:changed');
-  toast('Roteiro importado — agora ele pertence a esta viagem.');
+  toast(`Roteiro de ${semente.rotulo} importado — agora ele pertence a esta viagem.`);
 }
 
 document.addEventListener('click', (e) => {
-  if (e.target.closest && e.target.closest('#btnImportarSeed')) importarIlhabela();
+  const btnSeed = e.target.closest && e.target.closest('[data-seed]');
+  if (btnSeed) importarSemente(btnSeed.dataset.seed);
   // Âncoras do índice: rola levando em conta o cabeçalho fixo.
   const a = e.target.closest && e.target.closest('#guiaJump a');
   if (a) {
