@@ -300,11 +300,12 @@
 .mk-count { font-size: 13px; font-weight: 600; color: var(--muted); font-variant-numeric: tabular-nums; }
 .market-bar { height: 3px; border-radius: 0; }
 .market-tools {
-  display: flex; gap: 7px; align-items: center; overflow-x: auto; scrollbar-width: none;
+  display: flex; gap: 8px; align-items: center; margin: 0;
   padding: 10px var(--gutter); background: var(--card); border-bottom: 1px solid var(--line);
 }
-.market-tools::-webkit-scrollbar { display: none; }
-.market-sep { width: 1px; height: 20px; background: var(--line); flex: none; margin: 0 2px; }
+.market-tools .mk-busca { flex: 1; }
+.market-tools .mk-qtd { flex: 0 0 64px; }
+.market-tools .btn { flex: none; min-height: 42px; }
 .market-body { flex: 1; overflow-y: auto; padding: 4px var(--gutter) calc(32px + var(--safe-b)); }
 .market-body > * { max-width: 640px; margin-left: auto; margin-right: auto; }
 .mk-aisle { margin-top: 20px; }
@@ -314,13 +315,25 @@
 }
 .mk-aisle h3 span { color: var(--muted); }
 .mk-item {
-  width: 100%; display: flex; align-items: center; gap: 14px;
-  padding: 16px 14px; margin-bottom: 8px; text-align: left;
+  display: flex; align-items: center; gap: 2px; margin-bottom: 8px; padding-right: 6px;
   border: 1px solid var(--line); border-radius: var(--r); background: var(--card); box-shadow: var(--shadow-sm);
-  font-size: 19px; font-weight: 500;
-  transition: background-color .15s, opacity .2s, transform .12s var(--ease);
+  transition: background-color .15s, opacity .2s;
 }
-.mk-item:active { transform: scale(.985); }
+.mk-toggle {
+  flex: 1; min-width: 0; display: flex; align-items: center; gap: 14px;
+  padding: 16px 8px 16px 14px; border: 0; background: none; text-align: left; color: inherit;
+  font-size: 19px; font-weight: 500; transition: transform .12s var(--ease);
+}
+.mk-toggle:active { transform: scale(.985); }
+.mk-item .icon-btn { width: 40px; height: 40px; }
+.mk-item .icon-btn svg { width: 17px; height: 17px; }
+.mk-edit { flex: 1; min-width: 0; display: flex; gap: 8px; padding: 10px 4px 10px 10px; }
+.mk-edit input {
+  min-width: 0; min-height: 42px; padding: 8px 10px; font-size: 16px;
+  border: 1px solid var(--sand); border-radius: 10px; background: var(--card); color: var(--ink);
+}
+.mk-edit .mk-edit-nome { flex: 1; }
+.mk-edit .mk-edit-qtd { flex: 0 0 64px; }
 .mk-box { width: 28px; height: 28px; flex: none; border: 2.5px solid var(--sand); border-radius: 8px; }
 .mk-item.done { opacity: .4; }
 .mk-item.done .mk-nome { text-decoration: line-through; }
@@ -331,6 +344,7 @@
 .mk-nome { flex: 1; min-width: 0; }
 .mk-qty { flex: none; font-size: 14px; font-weight: 700; color: var(--sand-strong); }
 .mk-empty { padding: 50px 20px; text-align: center; color: var(--muted); font-size: 15px; }
+.mk-empty small { font-size: 13.5px; }
 .mk-done { padding: 56px 20px; text-align: center; font-family: var(--font-serif); font-size: 26px; color: var(--ok); }
 .mk-done small { font-size: 16px; color: var(--soft); }
 

@@ -1,13 +1,14 @@
 /* ===========================================================================
    MODO MERCADO — tela cheia, fonte grande, só o que falta, por corredor.
+   A busca acha qualquer item (inclusive os já comprados); o que não existir
+   é adicionado ao tópico "Mercado".
    ======================================================================== */
 
 import { state } from './state.js';
-import { TABLES, PEOPLE } from './config.js';
 import { $, esc } from './utils.js';
-import { enfileirar } from './db.js';
 import { toast, abrirModal, fecharModal, modalAberto } from './ui.js';
-import { itensMarcaveis, feitoParaMim, toggleMarca, renderTopicos } from './lists.js';
+import { itensMarcaveis, feitoParaMim, toggleMarca, salvarItem, removerItem, novoItem, criarTopico, encontrarItem } from './lists.js';
+import { ICON } from './icons.js';
 
 const CORREDORES = [
   { nome: 'Hortifrúti', chaves: ['alface','tomate','cebola','alho','batata','banana','maçã','maca','laranja','limão','limao','abacaxi','manga','melancia','uva','cenoura','pepino','salada','fruta','legume','verdura','abacate','mamão','mamao','morango'] },
@@ -34,83 +35,123 @@ function corredorDe(nome) {
   return hit ? hit.nome : 'Outros';
 }
 
-let soMeus = false;
+const normalizar = (t) => String(t || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').trim();
 
 export function abrirMercado() {
   if (!state.user) { toast('Escolha quem está acessando antes.'); return; }
+  $('mkBusca').value = '';
+  $('mkQtd').value = '';
   abrirModal('marketMode');
   renderMercado();
+}
+
+function itemHtml({ topico, item }) {
+  const feito = feitoParaMim(topico, item);
+  return `<div class="mk-item${feito ? ' done' : ''}" data-mk-id="${esc(item.id)}">` +
+    `<button type="button" class="mk-toggle" data-mk-act="toggle" aria-pressed="${feito}">` +
+      '<span class="mk-box" aria-hidden="true"></span>' +
+      `<span class="mk-nome">${esc(item.label)}</span>` +
+      (item.qty ? `<span class="mk-qty">${esc(item.qty)}</span>` : '') +
+    '</button>' +
+    `<button type="button" class="icon-btn" data-mk-act="editar" title="Editar" aria-label="Editar ${esc(item.label)}">${ICON.edit}</button>` +
+    `<button type="button" class="icon-btn danger" data-mk-act="remover" title="Excluir" aria-label="Excluir ${esc(item.label)}">${ICON.trash}</button>` +
+    '</div>';
 }
 
 export function renderMercado() {
   if (!modalAberto('marketMode')) return;
   const body = $('mkBody');
+  // Não redesenha por cima de uma edição em andamento.
+  if (body.querySelector('.mk-edit')) return;
   const todos = itensMarcaveis();
   const pendentes = todos.filter((x) => !feitoParaMim(x.topico, x.item));
-  const visiveis = soMeus ? pendentes.filter((x) => !x.item.assigned_to || x.item.assigned_to === state.user) : pendentes;
+  const busca = normalizar($('mkBusca').value);
+  $('mkAdd').disabled = !busca;
 
   $('mkCount').textContent = `${todos.length - pendentes.length} de ${todos.length}`;
   $('mkBar').style.width = (todos.length ? Math.round(((todos.length - pendentes.length) / todos.length) * 100) : 0) + '%';
 
-  if (!todos.length) { body.innerHTML = '<p class="mk-empty">Nenhum item na lista ainda.</p>'; return; }
-  if (!pendentes.length) { body.innerHTML = '<div class="mk-done">Tudo comprado.<br><small>Podem ir embora.</small></div>'; return; }
-  if (!visiveis.length) { body.innerHTML = '<p class="mk-empty">Nada sobrou para você — o resto está com a outra pessoa.</p>'; return; }
+  // Com busca, mostra também o que já foi comprado (para desmarcar ou editar).
+  const visiveis = busca ? todos.filter((x) => normalizar(x.item.label).includes(busca)) : pendentes;
+  if (busca && !visiveis.length) {
+    body.innerHTML = `<p class="mk-empty">Nada com “${esc($('mkBusca').value.trim())}”.<br><small>Toque em <b>Adicionar</b> para incluir na lista.</small></p>`;
+    return;
+  }
+  if (!todos.length) { body.innerHTML = '<p class="mk-empty">Nenhum item na lista ainda.<br><small>Digite acima e toque em <b>Adicionar</b>.</small></p>'; return; }
+  if (!visiveis.length) { body.innerHTML = '<div class="mk-done">Tudo comprado.<br><small>Podem ir embora.</small></div>'; return; }
 
   const grupos = {};
   visiveis.forEach((x) => { const c = corredorDe(x.item.label); (grupos[c] = grupos[c] || []).push(x); });
   body.innerHTML = ORDEM.filter((c) => grupos[c]).map((c) =>
     `<div class="mk-aisle"><h3>${esc(c)} <span>${grupos[c].length}</span></h3>` +
-    grupos[c].map(({ item }) => {
-      const quem = item.assigned_to;
-      return `<button type="button" class="mk-item" data-mk-id="${esc(item.id)}">` +
-        '<span class="mk-box" aria-hidden="true"></span>' +
-        `<span class="mk-nome">${esc(item.label)}</span>` +
-        (item.qty ? `<span class="mk-qty">${esc(item.qty)}</span>` : '') +
-        (quem ? `<span class="who who-${quem[0]}">${esc(PEOPLE[quem])}</span>` : '') +
-        '</button>';
-    }).join('') + '</div>').join('');
+    grupos[c].map(itemHtml).join('') + '</div>').join('');
 }
 
-function setFiltro(meus) {
-  soMeus = meus;
-  $('mkFiltroTodos').setAttribute('aria-pressed', meus ? 'false' : 'true');
-  $('mkFiltroMeus').setAttribute('aria-pressed', meus ? 'true' : 'false');
+// Destino dos itens novos: o tópico "Mercado"; na falta, o primeiro conjunto;
+// na falta de qualquer um, cria o "Mercado".
+function topicoDoMercado() {
+  const conjuntos = state.topicos.filter((t) => t.tipo === 'compartilhado');
+  return conjuntos.find((t) => normalizar(t.nome) === 'mercado') || conjuntos[0] || criarTopico('Mercado', 'compartilhado');
+}
+
+function adicionar() {
+  if (!state.trip) return;
+  const nome = $('mkBusca').value.trim();
+  if (!nome) { $('mkBusca').focus(); return; }
+  const topico = topicoDoMercado();
+  novoItem(topico, nome, $('mkQtd').value.trim());
+  $('mkBusca').value = '';
+  $('mkQtd').value = '';
   renderMercado();
+  $('mkBusca').focus();
+  toast(`Adicionado em <b>${esc(topico.nome)}</b>: ${esc(nome)}`);
+}
+
+function editar(el) {
+  const id = el.dataset.mkId;
+  const item = encontrarItem(id);
+  if (!item) return;
+  const wrap = document.createElement('div');
+  wrap.className = 'mk-edit';
+  wrap.innerHTML = '<input type="text" class="mk-edit-nome" aria-label="Nome">' +
+    '<input type="text" class="mk-edit-qtd" aria-label="Quantidade" placeholder="Qtd">';
+  const [inNome, inQtd] = wrap.querySelectorAll('input');
+  inNome.value = item.label || '';
+  inQtd.value = item.qty || '';
+  el.querySelector('.mk-toggle').replaceWith(wrap);
+  el.querySelectorAll('.icon-btn').forEach((b) => (b.hidden = true));
+  inNome.focus(); inNome.select();
+
+  let feito = false;
+  const terminar = (salvar) => {
+    if (feito) return;
+    feito = true;
+    wrap.remove(); // libera o renderMercado
+    const nome = inNome.value.trim(), qty = inQtd.value.trim() || null;
+    if (salvar && nome && (nome !== item.label || qty !== (item.qty || null))) salvarItem(id, { label: nome, qty });
+    else renderMercado();
+  };
+  wrap.addEventListener('focusout', () => setTimeout(() => { if (!wrap.contains(document.activeElement)) terminar(true); }, 0));
+  wrap.addEventListener('keydown', (ev) => {
+    if (ev.key === 'Enter') { ev.preventDefault(); terminar(true); }
+    if (ev.key === 'Escape') { ev.preventDefault(); ev.stopPropagation(); terminar(false); }
+  });
 }
 
 $('mkClose').addEventListener('click', () => fecharModal('marketMode'));
-$('mkFiltroTodos').addEventListener('click', () => setFiltro(false));
-$('mkFiltroMeus').addEventListener('click', () => setFiltro(true));
+$('mkBusca').addEventListener('input', renderMercado);
+$('mkAddForm').addEventListener('submit', (e) => { e.preventDefault(); adicionar(); });
 
 $('mkBody').addEventListener('click', (e) => {
-  const el = e.target.closest('.mk-item');
-  if (!el || el.classList.contains('done')) return;
-  el.classList.add('done');
-  setTimeout(() => toggleMarca(el.dataset.mkId), 260);
-});
-
-// Divide alternadamente o que falta entre os dois. Fica gravado no banco, então
-// os dois celulares veem a mesma divisão em tempo real.
-$('mkDividir').addEventListener('click', () => {
-  const pendentes = itensMarcaveis().filter((x) => !feitoParaMim(x.topico, x.item) && x.topico.tipo !== 'individual');
-  if (!pendentes.length) { toast('Não há o que dividir.'); return; }
-  pendentes.sort((a, b) => ORDEM.indexOf(corredorDe(a.item.label)) - ORDEM.indexOf(corredorDe(b.item.label)));
-  pendentes.forEach((x, i) => {
-    const quem = i % 2 === 0 ? 'fabricio' : 'carol';
-    x.item.assigned_to = quem;
-    enfileirar(TABLES.itens, 'update', { assigned_to: quem }, x.item.id);
-  });
-  renderTopicos();
-  toast('Lista dividida — toque em "Só os meus".');
-});
-
-$('mkLimparDivisao').addEventListener('click', () => {
-  itensMarcaveis().forEach(({ item }) => {
-    if (!item.assigned_to) return;
-    item.assigned_to = null;
-    enfileirar(TABLES.itens, 'update', { assigned_to: null }, item.id);
-  });
-  setFiltro(false);
-  renderTopicos();
-  toast('Divisão desfeita.');
+  const btn = e.target.closest('[data-mk-act]');
+  if (!btn) return;
+  const el = btn.closest('.mk-item');
+  const act = btn.dataset.mkAct;
+  if (act === 'editar') editar(el);
+  else if (act === 'remover') removerItem(el.dataset.mkId);
+  else if (el.classList.contains('done')) toggleMarca(el.dataset.mkId);   // desmarcar (aparece na busca)
+  else {
+    el.classList.add('done');
+    setTimeout(() => toggleMarca(el.dataset.mkId), 260);
+  }
 });

@@ -309,13 +309,11 @@
     <button type="button" class="btn btn-ghost btn-sm" id="mkClose">Fechar</button>
   </header>
   <div class="bar market-bar"><i id="mkBar"></i></div>
-  <div class="market-tools">
-    <button type="button" class="chip" id="mkFiltroTodos" aria-pressed="true">Tudo</button>
-    <button type="button" class="chip" id="mkFiltroMeus" aria-pressed="false">Só os meus</button>
-    <span class="market-sep"></span>
-    <button type="button" class="chip" id="mkDividir">Dividir entre nós</button>
-    <button type="button" class="chip" id="mkLimparDivisao">Desfazer divisão</button>
-  </div>
+  <form class="market-tools" id="mkAddForm" role="search" autocomplete="off">
+    <input type="search" id="mkBusca" class="input mk-busca" placeholder="Buscar ou adicionar item" aria-label="Buscar ou adicionar item" enterkeyhint="done">
+    <input type="text" id="mkQtd" class="input mk-qtd" placeholder="Qtd" aria-label="Quantidade">
+    <button type="submit" id="mkAdd" class="btn btn-primary btn-sm" disabled>Adicionar</button>
+  </form>
   <div class="market-body" id="mkBody"></div>
 </div>
 

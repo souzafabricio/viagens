@@ -46,16 +46,6 @@ function vazioHtml() {
     '</div>';
 }
 
-// Trocar o roteiro de uma viagem que já tem um: é assim que a mesma viagem
-// muda de destino sem perder listas, diário e fotos, que são por viagem_id.
-function trocarHtml() {
-  return '<section class="guide-section" id="guia-trocar">' +
-    '<h2 class="section-title">Trocar roteiro</h2>' +
-    '<div class="card info-box"><p class="note">Substitui o roteiro desta viagem por um pronto. ' +
-    'Listas, diário e fotos não são afetados — só o conteúdo do Guia.</p>' +
-    botoesSemente(false) + '</div></section>';
-}
-
 function diaHtml(d, i, idxHoje) {
   const ehHoje = i === idxHoje;
   return `<article class="day ${esc(d.cor || '')}${ehHoje ? ' is-today' : ''}" id="guia-${esc(d.id)}">` +
@@ -111,7 +101,6 @@ export function renderGuia() {
     r.dias.map((d, i) => diaHtml(d, i, idxHoje)).join('') + '</section>';
   html += (r.secoes || []).map(secaoHtml).join('');
   if (r.nota) html += `<p class="note">${r.nota}</p>`;
-  html += trocarHtml();
   cont.innerHTML = html;
 }
 

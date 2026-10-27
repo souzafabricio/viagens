@@ -101,12 +101,10 @@ function lugarHtml(item) {
 function itemHtml(topico, item) {
   if (topico.tipo === 'lugares') return lugarHtml(item);
   const feito = feitoParaMim(topico, item);
-  const quem = item.assigned_to && topico.tipo !== 'individual'
-    ? ` <span class="who who-${item.assigned_to[0]}" title="Dividido para ${esc(PEOPLE[item.assigned_to])}">${esc(PEOPLE[item.assigned_to])}</span>` : '';
   return `<div class="item${feito ? ' done' : ''}" data-item-id="${esc(item.id)}">` +
     marksHtml(topico, item) +
     (item.foto ? `<img class="item-foto" src="${esc(item.foto)}" alt="" data-item-act="ver-foto">` : '') +
-    `<span class="txt" data-item-act="toggle"><b>${esc(item.label)}</b>${item.qty ? ` <span class="qty">${esc(item.qty)}</span>` : ''}${quem}</span>` +
+    `<span class="txt" data-item-act="toggle"><b>${esc(item.label)}</b>${item.qty ? ` <span class="qty">${esc(item.qty)}</span>` : ''}</span>` +
     acoesHtml(true, item) + '</div>';
 }
 
@@ -239,7 +237,7 @@ function editarItem(el) {
 
 // Exclusão: some da tela na hora, mas só vira DELETE no banco depois de UNDO_MS
 // (ou ao recarregar/fechar a página). Nesse intervalo o "Desfazer" cancela tudo.
-function removerItem(itemId) {
+export function removerItem(itemId) {
   const item = encontrarItem(itemId);
   if (!item) return;
   const tid = item.topico_id;
@@ -269,21 +267,27 @@ function adicionarItem(row) {
   const nome = inNome.value.trim();
   if (!nome) { inNome.focus(); return; }
 
+  novoItem(topico, nome, inExtra.value.trim());
+  inNome.value = ''; inExtra.value = '';
+  const novoInput = document.querySelector(`.add-row[data-topico-id="${CSS.escape(topico.id)}"] .add-name`);
+  if (novoInput) novoInput.focus({ preventScroll: true });
+}
+
+// Cria o item no tópico. 'extra' é a quantidade (ou o endereço, em lugares).
+export function novoItem(topico, nome, extra) {
   const novo = {
     id: uid(), viagem_id: state.trip.id, topico_id: topico.id, label: nome,
     created_by: state.user, checked_fabricio: false, checked_carol: false,
   };
-  if (topico.tipo === 'lugares') novo.endereco = inExtra.value.trim() || null;
+  if (topico.tipo === 'lugares') novo.endereco = extra || null;
   else {
-    novo.qty = inExtra.value.trim() || null;
+    novo.qty = extra || null;
     if (topico.tipo === 'individual') novo.owner = state.user;
   }
   (state.itens[topico.id] = state.itens[topico.id] || []).push(novo);
-  inNome.value = ''; inExtra.value = '';
   renderTopicos();
-  const novoInput = document.querySelector(`.add-row[data-topico-id="${CSS.escape(topico.id)}"] .add-name`);
-  if (novoInput) novoInput.focus({ preventScroll: true });
   enfileirar(TABLES.itens, 'insert', novo);
+  return novo;
 }
 
 async function fotoDoItem(itemId) {
