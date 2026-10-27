@@ -1,6 +1,6 @@
 // Service worker — app shell offline + bibliotecas do CDN em cache.
 // Ao mudar qualquer arquivo do app, suba a versão abaixo.
-const VERSION = 'v4';
+const VERSION = 'v5';
 const SHELL = 'viagem-tobs-shell-' + VERSION;
 const LIBS = 'viagem-tobs-libs-' + VERSION;
 
