@@ -22,7 +22,7 @@ js/
   ui.js               toasts, modais (Esc/fundo), confirmar/perguntar, telas, abas, tema
   lists.js            tópicos e itens (Conjunta/Pessoal)
   market.js           Modo mercado
-  guide.js            aba Guia (+ seed-ilhabela.js)
+  guide.js            aba Guia (+ seed-ubatuba.js, seed-ilhabela.js)
   today.js, weather.js  aba Hoje e previsão (Open-Meteo)
   diary.js            aba Diário
   trips.js            lista, criação/edição/cópia/exclusão de viagens

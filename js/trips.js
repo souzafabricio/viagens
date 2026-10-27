@@ -240,7 +240,7 @@ async function iniciarEdicao(id) {
 }
 
 // Reaproveita a estrutura de outra viagem: mesmos tópicos e itens, ids novos,
-// marcações zeradas. "Quer usar a mala da Ilhabela?"
+// marcações zeradas. "Quer usar a mala de Ubatuba?"
 async function copiarEstrutura(origemId, destino) {
   if (!supa) return;
   const resT = await supa.from(TABLES.topicos).select('*').eq('viagem_id', origemId);

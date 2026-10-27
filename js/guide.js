@@ -1,7 +1,7 @@
 /* ===========================================================================
    GUIA — roteiro dia a dia. É DADO (viagem_roteiro.conteudo, jsonb), uma
    linha por viagem. Viagem nova nasce sem roteiro e mostra o estado vazio;
-   Ilhabela vira uma semente importável com um clique.
+   Ubatuba e Ilhabela viram sementes importáveis com um clique.
    Obs.: os campos de texto do roteiro aceitam HTML simples (negrito, links).
    ======================================================================== */
 
