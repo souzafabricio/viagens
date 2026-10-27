@@ -6,7 +6,7 @@
 import { state, emit } from './state.js';
 import { TABLES, PEOPLE, UNDO_MS } from './config.js';
 import { $, esc, uid, clone, mapsUrl } from './utils.js';
-import { enfileirar } from './db.js';
+import { enfileirar, adiarExclusao } from './db.js';
 import { toast, confirmar, perguntar } from './ui.js';
 import { escolherFoto, abrirFotoViewer } from './photos.js';
 import { ICON } from './icons.js';
@@ -237,8 +237,8 @@ function editarItem(el) {
   });
 }
 
-// Exclusão: some da tela na hora, mas só vira DELETE no banco depois de UNDO_MS.
-// Nesse intervalo o "Desfazer" cancela tudo — o item nunca saiu do servidor.
+// Exclusão: some da tela na hora, mas só vira DELETE no banco depois de UNDO_MS
+// (ou ao recarregar/fechar a página). Nesse intervalo o "Desfazer" cancela tudo.
 function removerItem(itemId) {
   const item = encontrarItem(itemId);
   if (!item) return;
@@ -248,11 +248,11 @@ function removerItem(itemId) {
   const copia = clone(item);
   state.itens[tid] = lista.filter((it) => it.id !== itemId);
   renderTopicos();
-  const timer = setTimeout(() => enfileirar(TABLES.itens, 'delete', null, itemId), UNDO_MS);
+  const cancelar = adiarExclusao(() => enfileirar(TABLES.itens, 'delete', null, itemId), UNDO_MS);
   toast(`Removido: <b>${esc(copia.label)}</b>`, {
     duracao: UNDO_MS - 200,
     desfazer: () => {
-      clearTimeout(timer);
+      if (!cancelar()) return;
       const l = (state.itens[tid] = state.itens[tid] || []);
       l.splice(pos < 0 ? l.length : pos, 0, copia);
       renderTopicos();
@@ -347,14 +347,14 @@ async function excluirTopico(id) {
   state.topicos = state.topicos.filter((t) => t.id !== id);
   delete state.itens[id];
   renderTopicos();
-  const timer = setTimeout(() => {
+  const cancelar = adiarExclusao(() => {
     enfileirar(TABLES.itens, 'deleteBy', { campo: 'topico_id', valor: id });
     enfileirar(TABLES.topicos, 'delete', null, id);
   }, UNDO_MS);
   toast(`Tópico removido: <b>${esc(copiaTopico.nome)}</b>`, {
     duracao: UNDO_MS - 200,
     desfazer: () => {
-      clearTimeout(timer);
+      if (!cancelar()) return;
       state.topicos.push(copiaTopico);
       state.itens[id] = copiaItens;
       renderTopicos();

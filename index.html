@@ -90,6 +90,15 @@
       <fieldset class="fieldset">
         <legend>Hospedagem</legend>
         <p class="hint">Usada para a previsão do tempo e para gerar o tópico “Onde Comprar” com lojas próximas.</p>
+        <div class="field">
+          <label class="field-label" for="tripBusca">Buscar endereço ou CEP</label>
+          <div class="ac-wrap">
+            <input type="text" id="tripBusca" placeholder="ex: R. João Ramalho, 90, Ubatuba ou 11687-512"
+              autocomplete="off" spellcheck="false" enterkeyhint="search"
+              role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="tripBuscaLista">
+            <ul id="tripBuscaLista" class="ac-list" role="listbox" aria-label="Sugestões de endereço" hidden></ul>
+          </div>
+        </div>
         <div class="map-row">
           <button type="button" id="mapPickerOpenBtn" class="btn btn-ghost btn-sm">Escolher no mapa</button>
           <span id="tripMapStatus" class="hint ok"></span>

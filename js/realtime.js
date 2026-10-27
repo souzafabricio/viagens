@@ -5,7 +5,7 @@
 import { state, emit } from './state.js';
 import { TABLES, PEOPLE } from './config.js';
 import { esc } from './utils.js';
-import { supa, salvarCache } from './db.js';
+import { supa, salvarCache, drenarOutbox, exclusoesPendentes } from './db.js';
 import { toast } from './ui.js';
 import { renderTopicos } from './lists.js';
 
@@ -14,6 +14,9 @@ let canais = [];
 export async function carregarTudoDaViagem() {
   if (!supa || !state.trip) return;
   const id = state.trip.id;
+  // Primeiro sobe o que está na fila: senão o servidor devolve o que acabou
+  // de ser excluído e ele reaparece na tela.
+  await drenarOutbox();
   try {
     const [resT, resI, resR, resD] = await Promise.all([
       supa.from(TABLES.topicos).select('*').eq('viagem_id', id),
@@ -22,13 +25,18 @@ export async function carregarTudoDaViagem() {
       supa.from(TABLES.diario).select('*').eq('viagem_id', id).order('created_at'),
     ]);
     if (!state.trip || state.trip.id !== id) return; // trocou de viagem no meio
-    if (!resT.error) state.topicos = resT.data || [];
+    // O que ainda tem DELETE na fila (sem rede) continua escondido.
+    const tExcluido = exclusoesPendentes(TABLES.topicos);
+    const iExcluido = exclusoesPendentes(TABLES.itens);
+    const dExcluido = exclusoesPendentes(TABLES.diario);
+    if (!resT.error) state.topicos = (resT.data || []).filter((t) => !tExcluido(t));
     if (!resI.error) {
       state.itens = {};
-      (resI.data || []).forEach((it) => (state.itens[it.topico_id] = state.itens[it.topico_id] || []).push(it));
+      (resI.data || []).filter((it) => !iExcluido(it))
+        .forEach((it) => (state.itens[it.topico_id] = state.itens[it.topico_id] || []).push(it));
     }
     if (!resR.error) state.roteiro = resR.data ? resR.data.conteudo : null;
-    if (!resD.error) state.diario = resD.data || [];
+    if (!resD.error) state.diario = (resD.data || []).filter((m) => !dExcluido(m));
   } catch (err) {
     console.warn('Sem rede ao carregar — seguindo com o cache local.', err);
   }

@@ -337,3 +337,16 @@
 /* =========================== Mapa =========================== */
 .map { height: 300px; border-radius: var(--r); overflow: hidden; border: 1px solid var(--line); }
 .map-addr { min-height: 20px; margin-top: 12px; font-size: 13px; color: var(--soft); }
+
+/* Busca de endereço com sugestões */
+.ac-wrap { position: relative; }
+.ac-list {
+  position: absolute; top: calc(100% + 4px); left: 0; right: 0; z-index: 30;
+  max-height: 280px; overflow-y: auto; margin: 0; padding: 4px; list-style: none;
+  background: var(--card); border: 1px solid var(--line); border-radius: 10px; box-shadow: var(--shadow-lg);
+}
+.ac-opt { display: flex; flex-direction: column; gap: 2px; padding: 9px 10px; border-radius: 8px; cursor: pointer; }
+.ac-opt strong { font-size: 14.5px; font-weight: 600; color: var(--ink); overflow-wrap: anywhere; }
+.ac-opt small { font-size: 12.5px; color: var(--muted); overflow-wrap: anywhere; }
+.ac-opt:hover, .ac-opt[aria-selected="true"] { background: var(--card-2); }
+.ac-msg { padding: 10px; font-size: 13px; color: var(--muted); }

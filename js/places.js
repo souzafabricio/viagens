@@ -17,7 +17,7 @@ const ESTADOS_UF = {
   'santa catarina':'SC','sao paulo':'SP','sergipe':'SE','tocantins':'TO',
 };
 const normalizar = (s) => (s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
-const ufDoEstado = (nome) => ESTADOS_UF[normalizar(nome)] || '';
+export const ufDoEstado = (nome) => ESTADOS_UF[normalizar(nome)] || '';
 
 /* ---------------- Seletor no mapa ---------------- */
 

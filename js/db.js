@@ -23,7 +23,6 @@ try {
 }
 
 let outbox = lsGet(LS.outbox, []);
-let sincronizando = false;
 let mostrarOkAoTerminar = false;
 
 function salvarOutbox() { lsSet(LS.outbox, outbox); atualizarSyncPill(); }
@@ -46,10 +45,17 @@ async function executar(op) {
   }
 }
 
-export async function drenarOutbox() {
-  if (!supa || sincronizando || !outbox.length) return;
-  if (!navigator.onLine) { atualizarSyncPill(); return; }
-  sincronizando = true;
+// Uma drenagem por vez; quem chama durante uma em andamento recebe a mesma
+// promessa (o carregamento da viagem espera a fila esvaziar antes de ler).
+let drenagem = null;
+export function drenarOutbox() {
+  if (!drenagem) drenagem = drenar().finally(() => { drenagem = null; atualizarSyncPill(); });
+  return drenagem;
+}
+
+async function drenar() {
+  if (!supa || !outbox.length) return;
+  if (!navigator.onLine) return;
   atualizarSyncPill();
   while (outbox.length) {
     const op = outbox[0];
@@ -58,7 +64,7 @@ export async function drenarOutbox() {
     if (res && res.error) {
       const msg = String(res.error.message || res.error);
       // Erro de rede: para e tenta de novo depois, sem perder a operação.
-      if (/fetch|network|timeout/i.test(msg)) { sincronizando = false; atualizarSyncPill(); return; }
+      if (/fetch|network|timeout/i.test(msg)) return;
       // Erro de dados (linha já apagada, coluna inexistente): descarta e segue,
       // senão a fila trava para sempre num item impossível.
       console.error('Operação descartada da fila:', op, res.error);
@@ -66,9 +72,43 @@ export async function drenarOutbox() {
     outbox.shift();
     salvarOutbox();
   }
-  sincronizando = false;
-  atualizarSyncPill();
 }
+
+// Ids que ainda têm DELETE esperando na fila — o carregamento os esconde,
+// senão o que foi excluído offline "volta" ao recarregar.
+export function exclusoesPendentes(table) {
+  const ids = new Set(), porCampo = [];
+  outbox.forEach((op) => {
+    if (op.table !== table) return;
+    if (op.action === 'delete') ids.add(op.matchId);
+    else if (op.action === 'deleteBy') porCampo.push(op.payload);
+  });
+  return (row) => ids.has(row.id) || porCampo.some((c) => row[c.campo] === c.valor);
+}
+
+/* ---- exclusão com "Desfazer" ----
+   Some da tela na hora e só entra na fila depois de ms. Se a página for
+   recarregada ou fechada antes, a exclusão é efetivada na saída — antes ela
+   se perdia e o tópico/item "voltava". */
+const exclusoesAdiadas = new Map();
+
+// Retorna cancelar(): true se cancelou a tempo.
+export function adiarExclusao(efetivar, ms) {
+  const chave = uid();
+  const timer = setTimeout(() => { exclusoesAdiadas.delete(chave); efetivar(); }, ms);
+  exclusoesAdiadas.set(chave, { timer, efetivar });
+  return () => {
+    if (!exclusoesAdiadas.has(chave)) return false;
+    clearTimeout(timer);
+    exclusoesAdiadas.delete(chave);
+    return true;
+  };
+}
+
+window.addEventListener('pagehide', () => {
+  exclusoesAdiadas.forEach(({ timer, efetivar }) => { clearTimeout(timer); efetivar(); });
+  exclusoesAdiadas.clear();
+});
 
 export function avisarQuandoSincronizar() { if (outbox.length) mostrarOkAoTerminar = true; }
 

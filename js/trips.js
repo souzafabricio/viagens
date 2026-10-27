@@ -14,6 +14,7 @@ import { carregarTudoDaViagem, inscreverRealtime, desinscrever } from './realtim
 import { carregarClima } from './weather.js';
 import { abrirMapPicker, gerarOndeComprar, removerTopicosLugares } from './places.js';
 import { ICON } from './icons.js';
+import { ligarBuscaEndereco } from './address-search.js';
 
 let editandoId = null;
 let enderecoOriginal = null;
@@ -204,6 +205,7 @@ function fecharForm() {
   form.reset();
   form.classList.add('hidden');
   $('tripMapStatus').textContent = '';
+  buscaEndereco.fechar();
   $('tripNewToggleBtn').classList.remove('hidden');
 }
 
@@ -362,3 +364,14 @@ $('mapPickerOpenBtn').addEventListener('click', () => abrirMapPicker((r) => {
   coordsEscolhidas = { lat: r.lat, lon: r.lon };
   $('tripMapStatus').textContent = 'Local marcado no mapa ✓';
 }));
+
+// Sugestão escolhida na busca: preenche o endereço e, se vier, a coordenada.
+// Sem coordenada (CEP que o Photon não achou), o salvar geocodifica por bairro/cidade.
+const buscaEndereco = ligarBuscaEndereco($('tripBusca'), $('tripBuscaLista'), (r) => {
+  $('tripBairro').value = r.bairro;
+  $('tripCidade').value = r.cidade;
+  $('tripUf').value = r.uf;
+  if (!$('tripLocal').value.trim() && r.cidade) $('tripLocal').value = r.cidade + (r.uf ? ', ' + r.uf : '');
+  coordsEscolhidas = r.lat != null ? { lat: r.lat, lon: r.lon } : null;
+  $('tripMapStatus').textContent = r.lat != null ? 'Local encontrado ✓' : 'Endereço preenchido — sem ponto exato no mapa';
+});

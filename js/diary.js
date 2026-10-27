@@ -7,7 +7,7 @@
 import { state } from './state.js';
 import { TABLES, PEOPLE, UNDO_MS } from './config.js';
 import { $, esc, uid } from './utils.js';
-import { enfileirar, salvarCache } from './db.js';
+import { enfileirar, salvarCache, adiarExclusao } from './db.js';
 import { toast } from './ui.js';
 import { datasDaViagem, indiceDiaHoje, isoDe, hoje, DIAS_SEMANA, MESES, tituloCurto } from './dates.js';
 import { escolherFoto, abrirFotoViewer } from './photos.js';
@@ -111,10 +111,10 @@ $('diarioLista').addEventListener('click', (e) => {
     const copia = state.diario.find((m) => m.id === id);
     state.diario = state.diario.filter((m) => m.id !== id);
     renderDiario();
-    const timer = setTimeout(() => enfileirar(TABLES.diario, 'delete', null, id), UNDO_MS);
+    const cancelar = adiarExclusao(() => enfileirar(TABLES.diario, 'delete', null, id), UNDO_MS);
     toast('Memória removida.', {
       duracao: UNDO_MS - 200,
-      desfazer: () => { clearTimeout(timer); if (copia) state.diario.push(copia); renderDiario(); },
+      desfazer: () => { if (!cancelar()) return; if (copia) state.diario.push(copia); renderDiario(); },
     });
   } else if (img) {
     const m = state.diario.find((x) => x.id === img.dataset.memFoto);

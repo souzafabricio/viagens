@@ -1,6 +1,6 @@
 // Service worker — app shell offline + bibliotecas do CDN em cache.
 // Ao mudar qualquer arquivo do app, suba a versão abaixo.
-const VERSION = 'v7';
+const VERSION = 'v9';
 const SHELL = 'viagem-tobs-shell-' + VERSION;
 const LIBS = 'viagem-tobs-libs-' + VERSION;
 
@@ -10,11 +10,11 @@ const APP_SHELL = [
   'js/main.js', 'js/config.js', 'js/state.js', 'js/utils.js', 'js/dates.js', 'js/db.js', 'js/ui.js',
   'js/icons.js', 'js/photos.js', 'js/lists.js', 'js/import-json.js', 'js/market.js', 'js/guide.js',
   'js/seed-ilhabela.js', 'js/seed-ubatuba.js', 'js/weather.js', 'js/today.js', 'js/diary.js', 'js/realtime.js',
-  'js/trips.js', 'js/places.js',
+  'js/trips.js', 'js/places.js', 'js/address-search.js',
 ];
 
 // Bibliotecas e fontes: versão fixa na URL, então podem ficar em cache.
-// Dados (Supabase, Nominatim, Overpass, Open-Meteo, tiles) passam direto pela rede.
+// Dados (Supabase, Nominatim, Photon, ViaCEP, Overpass, Open-Meteo, tiles) passam direto pela rede.
 const LIB_HOSTS = ['cdn.jsdelivr.net', 'fonts.googleapis.com', 'fonts.gstatic.com'];
 
 self.addEventListener('install', (event) => {
