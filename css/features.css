@@ -285,6 +285,22 @@
 .memory p { font-size: 14.5px; white-space: pre-wrap; overflow-wrap: anywhere; }
 .memory .mem-del { position: absolute; top: 8px; right: 8px; }
 
+/* =========================== Rota no Guia =========================== */
+.route-card { padding: 12px; }
+.route-map { height: 340px; border-radius: 10px; overflow: hidden; border: 1px solid var(--line); background: var(--card-2); }
+.route-resumo { margin: 10px 2px 4px; font-size: 13.5px; font-weight: 600; color: var(--soft); }
+.route-stops { list-style: none; margin: 6px 0 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.route-stops li { display: flex; align-items: flex-start; gap: 10px; font-size: 14.5px; }
+.route-stops small { display: block; font-size: 12.5px; color: var(--muted); }
+.route-pin {
+  display: inline-flex; align-items: center; justify-content: center; flex: none;
+  width: 24px; height: 24px; border-radius: 50%; border: 2px solid #fff;
+  background: var(--sea); color: #fff; font-size: 12px; font-weight: 700; box-shadow: var(--shadow-sm);
+}
+.route-marker { background: none; border: 0; }
+.route-card .link-row { margin-top: 12px; }
+@media (max-width: 520px) { .route-map { height: 260px; } }
+
 /* =========================== Mapa =========================== */
 .map { height: 300px; border-radius: var(--r); overflow: hidden; border: 1px solid var(--line); }
 .map-addr { min-height: 20px; margin-top: 12px; font-size: 13px; color: var(--soft); }

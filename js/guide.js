@@ -13,6 +13,7 @@ import { toast, confirmar } from './ui.js';
 import { indiceDiaHoje } from './dates.js';
 import { SEED_ILHABELA } from './seed-ilhabela.js';
 import { SEED_UBATUBA } from './seed-ubatuba.js';
+import { rotaHtml, ativarMapasDeRota } from './route-map.js';
 
 // Sementes disponíveis no estado vazio. A chave vai no data-seed do botão.
 const SEMENTES = {
@@ -63,7 +64,9 @@ function diaHtml(d, i, idxHoje) {
 
 function secaoHtml(s) {
   let html = `<section class="guide-section" id="${esc(s.id)}"><h2 class="section-title">${esc(s.titulo)}</h2>`;
-  if (s.tipo === 'warns') {
+  if (s.tipo === 'mapa') {
+    html += rotaHtml(s);
+  } else if (s.tipo === 'warns') {
     html += (s.itens || []).map((t) => `<div class="warn">${t}</div>`).join('');
   } else {
     html += '<div class="card info-box">' + (s.grupos || []).map((g) =>
@@ -79,6 +82,18 @@ function secaoHtml(s) {
   return html + '</section>';
 }
 
+// Roteiro importado de uma semente antes de ela ganhar seções novas: acrescenta
+// as que faltam (pelo id), na posição em que estão na semente, sem mexer no resto.
+function completarComSemente(r) {
+  const semente = Object.values(SEMENTES).map((x) => x.dados).find((d) => d.nota === r.nota);
+  if (!semente || (r.versao || 0) >= semente.versao) return false;
+  r.secoes = r.secoes || [];
+  const ids = new Set(r.secoes.map((x) => x.id));
+  semente.secoes.forEach((x, i) => { if (!ids.has(x.id)) r.secoes.splice(Math.min(i, r.secoes.length), 0, clone(x)); });
+  r.versao = semente.versao;
+  return true;
+}
+
 export function renderGuia() {
   const jump = $('guiaJump'), cont = $('guiaConteudo');
   if (!cont) return;
@@ -89,6 +104,7 @@ export function renderGuia() {
     cont.innerHTML = vazioHtml();
     return;
   }
+  if (completarComSemente(r)) salvarRoteiro();
   jump.hidden = false;
   const idxHoje = indiceDiaHoje(state.trip);
   jump.innerHTML = r.dias.map((d, i) =>
@@ -102,6 +118,7 @@ export function renderGuia() {
   html += (r.secoes || []).map(secaoHtml).join('');
   if (r.nota) html += `<p class="note">${r.nota}</p>`;
   cont.innerHTML = html;
+  ativarMapasDeRota(cont, r.secoes);
 }
 
 export function salvarRoteiro() {
