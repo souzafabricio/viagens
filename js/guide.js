@@ -82,19 +82,13 @@ function secaoHtml(s) {
   return html + '</section>';
 }
 
-// Roteiro importado de uma semente mais antiga: acrescenta as seções que faltam
-// (pelo id), na posição em que estão na semente, e atualiza as de mapa, que são
-// só dados fixos. O resto do roteiro não é tocado.
-function completarComSemente(r) {
+// Roteiro importado de uma semente mais antiga: o Guia não é editável no app,
+// então a versão nova da semente substitui o conteúdo inteiro.
+function atualizarDaSemente(r) {
   const semente = Object.values(SEMENTES).map((x) => x.dados).find((d) => d.nota === r.nota);
   if (!semente || (r.versao || 0) >= semente.versao) return false;
-  r.secoes = r.secoes || [];
-  semente.secoes.forEach((x, i) => {
-    const atual = r.secoes.findIndex((y) => y.id === x.id);
-    if (atual < 0) r.secoes.splice(Math.min(i, r.secoes.length), 0, clone(x));
-    else if (x.tipo === 'mapa') r.secoes[atual] = clone(x);
-  });
-  r.versao = semente.versao;
+  Object.keys(r).forEach((k) => delete r[k]);
+  Object.assign(r, clone(semente));
   return true;
 }
 
@@ -108,7 +102,7 @@ export function renderGuia() {
     cont.innerHTML = vazioHtml();
     return;
   }
-  if (completarComSemente(r)) salvarRoteiro();
+  if (atualizarDaSemente(r)) salvarRoteiro();
   jump.hidden = false;
   const idxHoje = indiceDiaHoje(state.trip);
   jump.innerHTML = r.dias.map((d, i) =>

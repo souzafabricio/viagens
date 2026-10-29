@@ -1,5 +1,5 @@
-/* Estrutura das telas: login, hero, barra fixa, abas (topo no desktop,
-   barra inferior no celular), conteúdo e rodapé. */
+/* Estrutura das telas: login, hero, barra fixa, abas (fixas no topo, logo
+   abaixo da barra), conteúdo e rodapé. */
 
 .screen { display: none; }
 .screen.active { display: block; animation: screenIn .45s var(--ease) both; }
@@ -81,12 +81,12 @@
 }
 
 /* ---------- Abas ---------- */
-/* Celular: barra inferior com ícones */
+/* Sempre no topo, logo abaixo da barra fixa, e presas ali ao rolar. */
 .tabs {
-  position: fixed; left: 0; right: 0; bottom: 0; z-index: 30;
+  position: sticky; top: var(--appbar-h); z-index: 19;
   display: flex; justify-content: space-around;
-  height: calc(var(--nav-h) + var(--safe-b)); padding: 0 4px var(--safe-b);
-  background: var(--bar-bg); border-top: 1px solid var(--line);
+  height: var(--nav-h); padding: 0 4px;
+  background: var(--bar-bg); border-bottom: 1px solid var(--line);
   -webkit-backdrop-filter: saturate(1.4) blur(12px); backdrop-filter: saturate(1.4) blur(12px);
 }
 .tab-btn {
@@ -96,32 +96,28 @@
   font-size: 11px; font-weight: 600; letter-spacing: .02em;
   transition: color .15s;
 }
-.tab-btn svg { width: 22px; height: 22px; transition: transform .2s var(--ease); }
+.tab-btn svg { width: 21px; height: 21px; transition: transform .2s var(--ease); }
 .tab-btn.active { color: var(--sand-strong); }
 .tab-btn.active svg { transform: translateY(-1px); }
 .tab-btn::before {
-  content: ''; position: absolute; top: 0; left: 30%; right: 30%; height: 2px; border-radius: 0 0 2px 2px;
+  content: ''; position: absolute; bottom: 0; left: 26%; right: 26%; height: 2px; border-radius: 2px 2px 0 0;
   background: var(--sand); transform: scaleX(0); transition: transform .2s var(--ease);
 }
 .tab-btn.active::before { transform: scaleX(1); }
 .badge {
-  position: absolute; top: 7px; left: calc(50% + 6px);
+  position: absolute; top: 5px; left: calc(50% + 6px);
   min-width: 17px; height: 17px; padding: 0 5px; border-radius: 9px;
   background: var(--sand); color: var(--on-accent);
   font-size: 10px; line-height: 17px; font-weight: 700; text-align: center;
 }
-#screenTrip .wrap { padding-bottom: calc(var(--nav-h) + 32px + var(--safe-b)); }
+#screenTrip .wrap { padding-bottom: calc(40px + var(--safe-b)); }
 
-/* Desktop: abas no topo, abaixo da barra fixa */
+/* Desktop: ícone e texto lado a lado, centralizados */
 @media (min-width: 760px) {
-  .tabs {
-    position: sticky; top: var(--appbar-h); bottom: auto; z-index: 19;
-    justify-content: center; gap: 4px; height: 48px; padding: 0 var(--gutter);
-    border-top: 0; border-bottom: 1px solid var(--line);
-  }
+  .tabs { justify-content: center; gap: 4px; height: 48px; padding: 0 var(--gutter); }
   .tab-btn { flex: none; max-width: none; flex-direction: row; gap: 7px; padding: 0 14px; font-size: 13px; }
   .tab-btn svg { width: 17px; height: 17px; }
-  .tab-btn::before { top: auto; bottom: 0; left: 12px; right: 12px; border-radius: 2px 2px 0 0; }
+  .tab-btn::before { left: 12px; right: 12px; }
   .badge { position: static; margin-left: 2px; }
   #screenTrip .wrap { padding-bottom: 48px; }
   .hero { padding-top: calc(48px + var(--safe-t)); padding-bottom: 34px; }

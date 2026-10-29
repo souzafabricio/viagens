@@ -2,16 +2,18 @@
 // Os campos de texto (fork, s, n, d, nota e itens de 'warns') aceitam HTML simples.
 
 export const SEED_UBATUBA = {
-  versao: 4,
+  versao: 5,
   nota: 'Base da viagem: <b>apartamento da família — R. João Ramalho, 90, Itaguá, Condomínio Village Côte d\'Azur (−23,4449473, −45,0734722)</b>. As distâncias são <b>estimativas</b> calculadas a partir desse endereço: confirme no Maps antes de sair, principalmente em janeiro, quando a Rio-Santos engarrafa. Horários e preços foram levantados em outubro de 2026 — reconfirme por telefone ou WhatsApp na semana da viagem.',
   dias: [
     { id:'d1', dnum:'Dia 1', titulo:'Quinta, 7 de janeiro — chegada', tag:'Viagem', cor:'',
-      fork:'<b>O gargalo da viagem é a serra, não a cidade.</b> A SP-125 (Oswaldo Cruz) desce de Taubaté para Ubatuba em 28 km de curva fechada, com neblina frequente no fim da tarde e fila atrás de caminhão. <b>Chegue à serra antes das 15h</b> — saindo de São João da Boa Vista às 5h sobra folga até para parar duas vezes.',
+      fork:'<b>O gargalo da viagem é o fim, não a serra.</b> A Tamoios desce bem, mas os últimos ~40 km pela <b>Rio-Santos, de Caraguatatuba a Ubatuba</b>, são pista simples e engarrafam em janeiro a partir do fim da manhã. <b>Passe por Caraguatatuba antes das 11h</b> — saindo de São João da Boa Vista às 5h, dá com folga até para parar duas vezes.',
       itens:[
-        {h:'5h', b:'Saída de São João da Boa Vista', s:'<b>Cerca de 415 km e 6h de estrada</b> pelo caminho natural: SP-344 até Campinas, Dom Pedro I (SP-065) até Taubaté e SP-125 até Ubatuba. Abasteça antes de pegar a Dom Pedro.'},
-        {h:'8h30', b:'Parada para café', s:'Qualquer posto da Dom Pedro. A partir de Taubaté não há mais trecho bom para parar com calma.'},
-        {h:'10h30', b:'Taubaté — último abastecimento barato', s:'Combustível no litoral é mais caro. Encha o tanque aqui e desça a serra com o carro cheio.'},
-        {h:'11h', b:'Serra da Oswaldo Cruz', s:'<b>28 km de descida, cerca de 50 min.</b> Pista simples, sem acostamento, com mirantes no caminho. Não tente ultrapassar: em janeiro a fila anda devagar e volta a andar sozinha.'},
+        {h:'5h', b:'Saída de São João da Boa Vista', s:'<b>Cerca de 400 km e 5h50 de estrada</b>, sem contar paradas: SP-344 e SP-340 até Campinas, <b>Dom Pedro I</b> (SP-065) até Jacareí, <b>Carvalho Pinto</b> (SP-070) até São José dos Campos e <b>Tamoios</b> (SP-099) até o litoral. Separe tag ou dinheiro para os pedágios.'},
+        {h:'8h', b:'Parada para café', s:'Qualquer posto da Dom Pedro. Depois da Carvalho Pinto, as paradas boas ficam escassas.'},
+        {h:'8h45', b:'São José dos Campos — último abastecimento barato', s:'Combustível no litoral é mais caro. Encha o tanque antes de pegar a Tamoios e desça com o carro cheio.'},
+        {h:'9h', b:'Tamoios no planalto — Jambeiro e Paraibuna', s:'<b>Cerca de 60 km de pista dupla</b> até o alto da serra, passando por Jambeiro e pela represa de Paraibuna.'},
+        {h:'10h', b:'Serra da Tamoios', s:'Descida até Caraguatatuba. Em janeiro pode ter fila e neblina; respeite os radares, a fiscalização é constante.'},
+        {h:'10h30', b:'Contorno de Caraguatatuba e Rio-Santos', s:'O Contorno evita o centro de Caraguatatuba e cai na <b>Rio-Santos (BR-101)</b>. Daqui até Itaguá são <b>~40 km, cerca de 50 min</b> sem trânsito — em janeiro, conte mais.'},
         {h:'12h', b:'Chegada em Itaguá', s:'O apartamento fica a <b>1,5 km do centro</b> e a 800 m do Aquário. Estacionamento é do condomínio — uma vantagem enorme em janeiro, quando a Zona Azul do centro vive lotada.'},
         {h:'13h', b:'Almoço na Rua Guarani', s:'<b>9 min a pé.</b> <b>Peixe com Banana</b> (Guarani, 315 · R$ 50–140) é o prato que dá nome à cidade. Alternativa ao lado: <b>Braseiro Caiçara</b> (Guarani, 359).'},
         {h:'15h', b:'Compras da viagem', s:'<b>Conde Supermercado</b> (R. Cap. Felipe, 558 · ~6 min de carro · até 22h) para a compra grande, ou <b>TopStop</b> (Cap. Felipe, 476 · até 22h30) para o básico. O apartamento tem cozinha: comprar café da manhã da semana inteira economiza bastante.'},
@@ -77,15 +79,15 @@ export const SEED_UBATUBA = {
         {h:'9h', b:'Aquário de Ubatuba', hi:true, s:'R. Guarani, 859 · <b>800 m, 11 min a pé</b> · todos os dias 9h–22h · <b>inteira R$ 70, meia R$ 35</b>; pacote família a partir de R$ 150. Compre online com horário marcado e pule a fila.'},
         {h:'11h', b:'Última volta pela Rua Guarani', s:'Café, lembrancinha e o que faltou. Tudo no mesmo quarteirão.'},
         {h:'11h30', b:'Fechar o apartamento', s:'Lixo fora, geladeira esvaziada, chave onde combinaram.'},
-        {h:'12h', b:'Abastecer antes de subir a serra', s:'<b>Posto Sete Estrelas</b> (Av. Leovigildo Dias Vieira, 590 · 3 min · <b>24 h</b>). Subir a Oswaldo Cruz com pouco combustível é o tipo de aperto que não vale a economia.'},
-        {h:'12h30', b:'Estrada de volta', s:'<b>~6h até São João da Boa Vista.</b> Saindo ao meio-dia e meia vocês pegam a serra antes do fluxo da tarde e chegam por volta das 18h30.'}
+        {h:'12h', b:'Abastecer antes de pegar a estrada', s:'<b>Posto Sete Estrelas</b> (Av. Leovigildo Dias Vieira, 590 · 3 min · <b>24 h</b>). Rio-Santos parada e serra da Tamoios com pouco combustível é o tipo de aperto que não vale a economia.'},
+        {h:'12h30', b:'Estrada de volta', s:'<b>~6h até São João da Boa Vista</b> pelo mesmo caminho: Rio-Santos até Caraguatatuba, Tamoios, Carvalho Pinto e Dom Pedro. Quarta é dia útil, sem o fluxo de volta do fim de semana — chegada por volta das 18h30.'}
       ]}
   ],
   secoes: [
     { id:'guia-rota', titulo:'Rota de carro', tipo:'mapa',
       pontos:[
         {n:'Casa — São João da Boa Vista', s:'R. Ida Gabriela da Silva Marcondes, Recanto do Lago', lat:-21.9692982, lon:-46.7576281},
-        {n:'Rodovia dos Tamoios — Jambeiro', s:'Ponto de passagem: obriga a rota a descer pela Tamoios', lat:-23.3145716, lon:-45.7553369},
+        {n:'Rodovia dos Tamoios — Jambeiro', s:'Ponto de passagem: a descida é pela Tamoios', lat:-23.3145716, lon:-45.7553369},
         {n:'Apartamento — Itaguá, Ubatuba', s:'R. João Ramalho, 90', lat:-23.4449395, lon:-45.0734749}
       ],
       links:[
@@ -95,7 +97,7 @@ export const SEED_UBATUBA = {
       '<b>1. Escuna da Ilha Anchieta — reserve com antecedência e reconfirme na véspera.</b> Em janeiro os barcos saem cheios e o passeio depende de condição de mar. Fechar pessoalmente no <b>Saco da Ribeira</b> no sábado costuma sair mais barato que por telefone.<br>· <b>Mykonos Turismo</b> — R. Flamenguinho, 17 · (12) 99603-1985 · <b>fecha quarta</b>.<br>· <b>Escuna Copacabana</b> — Av. da Ribeira, 400 · (12) 99763-8690.<br>· <b>Passeios de Escuna Ubatuba</b> — Av. Leovigildo Dias Vieira, 446 (Itaguá) · (12) 99184-7933 · 8h–20h todos os dias.',
       '<b>2. Ilha das Couves — não precisa reservar, mas precisa chegar cedo.</b> A travessia sai de Picinguaba por ordem de chegada, ~R$ 60 por pessoa. Até 9h tem vaga de estacionamento e lancha; depois das 10h vira fila. A ilha <b>não tem banheiro</b> e tem um quiosque só.',
       '<b>3. Aquário — compre online com horário marcado.</b> Inteira R$ 70, meia R$ 35, pacote família de R$ 150 a R$ 220. Aberto <b>todos os dias das 9h às 22h</b> — em dia de chuva ele é o plano B da cidade inteira e a fila dobra.',
-      '<b>4. A serra é o trecho crítico, nos dois sentidos.</b> A SP-125 tem pista simples, neblina de fim de tarde e nenhuma alternativa boa. Programe a descida antes das 15h e a subida antes das 16h. <b>E evite a Rio-Santos no domingo</b> — foi por isso que o dia 10 ficou perto de casa.',
+      '<b>4. O trecho crítico é a Rio-Santos, nos dois sentidos.</b> Entre Caraguatatuba e Ubatuba ela é pista simples e trava em janeiro. Desça a Tamoios cedo, para passar por Caraguatatuba antes das 11h, e na volta saia de Ubatuba até o começo da tarde. <b>E evite a Rio-Santos no domingo</b> — foi por isso que o dia 10 ficou perto de casa.',
       '<b>5. Dinheiro em espécie.</b> Quiosque de praia do norte, cachoeira, lancha de Picinguaba e ilha costumam não ter sinal para Pix nem maquininha confiável. Leve notas pequenas.',
       '<b>6. Repelente em creme, não spray.</b> Borrachudo em Ubatuba é pior nas cachoeiras e nas praias com rio — Itamambuca e Prumirim entram nessa lista.',
       '<b>7. Plano de chuva.</b> Janeiro é o mês mais chuvoso do litoral norte: espere pancada de fim de tarde quase todo dia. Praia de manhã, programa coberto à tarde.'
@@ -155,14 +157,13 @@ export const SEED_UBATUBA = {
       ]}
     ], links:[
       {t:'Aquário — ingressos', u:'https://www.aquariodeubatuba.com.br/valores/'},
-      {t:'Projeto Tamar', u:'https://www.tamar.org.br'},
-      {t:'Rota pela Oswaldo Cruz', u:'https://www.google.com/maps/dir/S%C3%A3o+Jo%C3%A3o+da+Boa+Vista+-+SP/Itagu%C3%A1,+Ubatuba+-+SP'}
+      {t:'Projeto Tamar', u:'https://www.tamar.org.br'}
     ]},
     { id:'guia-trocas', titulo:'Trocas possíveis', tipo:'box', grupos:[
       { h4:'Se o mar virar e cancelarem a escuna na segunda', linhas:[
         {d:'Faça', n:'Antecipe a <b>Ilha das Couves</b> para a segunda', s:'A travessia de Picinguaba é mar de dentro e costuma rodar com o mar ruim lá fora. Aí a terça vira o dia de sobra.'},
         {d:'Ou', n:'Troque o barco pela <b>trilha das Sete Fontes</b>', s:'15 min de carro. Caminhada curta que liga três praias, com quiosque nas duas últimas. Dia inteiro sem depender de mar.'},
-        {d:'Ou', n:'Empurre a escuna para a <b>terça</b> e leve as Couves para a <b>quarta de manhã</b>', s:'Só se aceitarem sair de Ubatuba depois do almoço de quarta — e aí a serra pega mais movimento.'}
+        {d:'Ou', n:'Empurre a escuna para a <b>terça</b> e leve as Couves para a <b>quarta de manhã</b>', s:'Só se aceitarem sair de Ubatuba depois do almoço de quarta — e aí a Rio-Santos pega mais movimento.'}
       ]},
       { h4:'Se chover o dia inteiro', linhas:[
         {d:'Plano A', n:'<b>Aquário</b> de manhã e <b>Tamar</b> à tarde', s:'Os dois a pé do apartamento. O Aquário é coberto e abre até as 22h.'},
