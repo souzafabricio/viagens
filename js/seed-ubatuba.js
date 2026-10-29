@@ -2,7 +2,7 @@
 // Os campos de texto (fork, s, n, d, nota e itens de 'warns') aceitam HTML simples.
 
 export const SEED_UBATUBA = {
-  versao: 3,
+  versao: 4,
   nota: 'Base da viagem: <b>apartamento da família — R. João Ramalho, 90, Itaguá, Condomínio Village Côte d\'Azur (−23,4449473, −45,0734722)</b>. As distâncias são <b>estimativas</b> calculadas a partir desse endereço: confirme no Maps antes de sair, principalmente em janeiro, quando a Rio-Santos engarrafa. Horários e preços foram levantados em outubro de 2026 — reconfirme por telefone ou WhatsApp na semana da viagem.',
   dias: [
     { id:'d1', dnum:'Dia 1', titulo:'Quinta, 7 de janeiro — chegada', tag:'Viagem', cor:'',
@@ -89,7 +89,7 @@ export const SEED_UBATUBA = {
         {n:'Apartamento — Itaguá, Ubatuba', s:'R. João Ramalho, 90', lat:-23.4449395, lon:-45.0734749}
       ],
       links:[
-        {t:'Abrir no Google Maps', u:'https://www.google.com/maps/dir/R.+Ida+Gabriela+da+Silva+Marcondes+-+Recanto+do+Lago,+S%C3%A3o+Jo%C3%A3o+da+Boa+Vista+-+SP,+13874-784,+Brasil/Tamoios,+Jambeiro+-+SP,+11675-250/R.+Jo%C3%A3o+Ramalho,+90+-+Itagu%C3%A1,+Ubatuba+-+SP,+11680-000/@-23.0455481,-45.8872399,9.5z/data=!4m20!4m19!1m5!1m1!1s0x94c9cbc2ac9d6d1f:0xf07309f24d56575b!2m2!1d-46.7576281!2d-21.9692982!1m5!1m1!1s0x94cdb1d4f1f113c3:0x695572a2ae720f00!2m2!1d-45.7553369!2d-23.3145716!1m5!1m1!1s0x94cd518082f8adad:0x56a8144d446e8f5d!2m2!1d-45.0734749!2d-23.4449395!3e0'}
+        {t:'Abrir no Waze', u:'https://waze.com/ul?ll=-23.4449395,-45.0734749&navigate=yes'}
       ]},
     { id:'guia-reservas', titulo:'Reservar antes de viajar', tipo:'warns', itens:[
       '<b>1. Escuna da Ilha Anchieta — reserve com antecedência e reconfirme na véspera.</b> Em janeiro os barcos saem cheios e o passeio depende de condição de mar. Fechar pessoalmente no <b>Saco da Ribeira</b> no sábado costuma sair mais barato que por telefone.<br>· <b>Mykonos Turismo</b> — R. Flamenguinho, 17 · (12) 99603-1985 · <b>fecha quarta</b>.<br>· <b>Escuna Copacabana</b> — Av. da Ribeira, 400 · (12) 99763-8690.<br>· <b>Passeios de Escuna Ubatuba</b> — Av. Leovigildo Dias Vieira, 446 (Itaguá) · (12) 99184-7933 · 8h–20h todos os dias.',

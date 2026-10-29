@@ -82,14 +82,18 @@ function secaoHtml(s) {
   return html + '</section>';
 }
 
-// Roteiro importado de uma semente antes de ela ganhar seções novas: acrescenta
-// as que faltam (pelo id), na posição em que estão na semente, sem mexer no resto.
+// Roteiro importado de uma semente mais antiga: acrescenta as seções que faltam
+// (pelo id), na posição em que estão na semente, e atualiza as de mapa, que são
+// só dados fixos. O resto do roteiro não é tocado.
 function completarComSemente(r) {
   const semente = Object.values(SEMENTES).map((x) => x.dados).find((d) => d.nota === r.nota);
   if (!semente || (r.versao || 0) >= semente.versao) return false;
   r.secoes = r.secoes || [];
-  const ids = new Set(r.secoes.map((x) => x.id));
-  semente.secoes.forEach((x, i) => { if (!ids.has(x.id)) r.secoes.splice(Math.min(i, r.secoes.length), 0, clone(x)); });
+  semente.secoes.forEach((x, i) => {
+    const atual = r.secoes.findIndex((y) => y.id === x.id);
+    if (atual < 0) r.secoes.splice(Math.min(i, r.secoes.length), 0, clone(x));
+    else if (x.tipo === 'mapa') r.secoes[atual] = clone(x);
+  });
   r.versao = semente.versao;
   return true;
 }
