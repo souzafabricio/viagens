@@ -157,7 +157,8 @@ export const SEED_UBATUBA = {
       ]}
     ], links:[
       {t:'Aquário — ingressos', u:'https://www.aquariodeubatuba.com.br/valores/'},
-      {t:'Projeto Tamar', u:'https://www.tamar.org.br'}
+      {t:'Projeto Tamar', u:'https://www.tamar.org.br'},
+      {t:'Rota: apartamento → Itamambuca', u:'https://www.google.com/maps/dir/R.+Jo%C3%A3o+Ramalho,+90+-+Itagu%C3%A1,+Ubatuba+-+SP,+11680-000/Praia+do+Itamambuca,+Ubatuba+-+SP,+11680-000/@-23.4196738,-45.0663946,14z/data=!4m14!4m13!1m5!1m1!1s0x94cd518082f8adad:0x56a8144d446e8f5d!2m2!1d-45.0734749!2d-23.4449395!1m5!1m1!1s0x94cd52b165e4b043:0xc424c3a059f878e3!2m2!1d-45.0038751!2d-23.3968886!3e0'}
     ]},
     { id:'guia-trocas', titulo:'Trocas possíveis', tipo:'box', grupos:[
       { h4:'Se o mar virar e cancelarem a escuna na segunda', linhas:[
