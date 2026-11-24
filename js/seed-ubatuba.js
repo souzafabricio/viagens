@@ -28,7 +28,8 @@ export const SEED_UBATUBA = {
         {h:'11h', b:'Praia do Félix', s:'<b>~15,5 km, 19 min.</b> Estaciona no fim da estrada de terra e caminha ~300 m. Dos cantos saem trilhas curtas para a <b>Praia do Português</b> e a <b>Praia da Conchinha</b> — vazias e com água mais calma.'},
         {h:'13h', b:'Almoço de quiosque', s:'Os quiosques do Félix têm peixe frito, pastel e cerveja. Sem Pix garantido: <b>leve dinheiro</b>.'},
         {h:'15h', b:'Cachoeira do Prumirim', hi:true, s:'<b>~17,6 km, 22 min</b> — entrada sinalizada na Rio-Santos, no km 25. Poço grande e queda forte, 5 min de caminhada do estacionamento. <b>Estacionamento cobrado (~R$ 25).</b> Pedra muito escorregadia: chinelo não serve.'},
-        {h:'17h', b:'Praia do Prumirim no fim da tarde', s:'Logo abaixo da cachoeira. Mar calmo e quase sem gente depois das 17h.'},
+        {h:'16h30', b:'Jundu Praia Bar — Prumirim', hi:true, s:'Vereda Dez, 159 · <b>~17,8 km, 22 min</b> · <b>9h–18h todos os dias</b> · (12) 3845-3027. O melhor bar pé na areia do norte: cozinha caprichada, drinks e banheiro limpo, numa praia tranquila. <b>Fecha às 18h</b> — chegue até as 17h para não correr.'},
+        {h:'17h30', b:'Último mergulho no Prumirim', s:'A praia fica na porta do Jundu. Mar calmo e quase sem gente no fim da tarde.'},
         {h:'20h', b:'Jantar em Itaguá', s:'<b>Raízes</b> (Av. Leovigildo Dias Vieira, 1280 · ~5 min de carro · até 23h30) — peixe, massa e pizza, música ao vivo. Reserve ou chegue antes das 20h.'}
       ]},
     { id:'d3', dnum:'Dia 3', titulo:'Sábado, 9 de janeiro — praias do sul', tag:'Sul', cor:'hl-sand',
@@ -46,7 +47,8 @@ export const SEED_UBATUBA = {
       itens:[
         {h:'9h30', b:'Praia do Tenório', s:'<b>~4 km, 8 min.</b> Mar bom para banho e quiosque com cadeira. <b>Chegue antes das 10h</b>: o estacionamento é pequeno e some cedo no domingo.'},
         {h:'13h', b:'Almoço e descanso em casa', s:'Aproveitem a cozinha. Domingo de janeiro é fila em restaurante o dia inteiro.'},
-        {h:'16h', b:'Projeto Tamar', s:'R. Antônio Atanázio, 273 · <b>1,3 km, 17 min a pé</b> · 9h–17h. Visita curta, de 40 min a 1h, e dá para ir e voltar caminhando.'},
+        {h:'15h', b:'P9 Beach Club — Toninhas', hi:true, s:'Rod. Gov. Mário Covas, 753 · <b>~6 km, 12 min</b> · <b>9h–18h todos os dias</b> · (12) 99193-6446. Beach club com restaurante japonês e vista. Tarde de espreguiçadeira e drink sem sair muito de casa — é o programa de domingo que não depende da Rio-Santos.'},
+        {h:'17h', b:'Projeto Tamar (se sobrar fôlego)', s:'R. Antônio Atanázio, 273 · <b>1,3 km, 17 min a pé</b> · 9h–17h. Visita curta. Se o P9 render, deixe para outro dia.'},
         {h:'18h', b:'Pôr do sol no Píer Comodoro Magalhães', s:'<b>~6 min de carro.</b> O píer do centro, com a baía inteira na frente.'},
         {h:'20h', b:'Jantar a pé', s:'<b>Quintal da Villa</b> ou <b>Braseiro Caiçara</b>, os dois a 9 min de casa. Deixe o carro parado.'},
         {h:'22h', b:'Dormir cedo', s:'Amanhã o carro sai às 8h30 e o barco não espera.'}
@@ -118,12 +120,13 @@ export const SEED_UBATUBA = {
         {d:'9 min', n:'Praia Grande', s:'A praia urbana mais fácil · calçadão e estrutura'},
         {d:'9 min', n:'Praia Vermelha do Centro', s:'Mar de tombo · bonita, pouca infraestrutura'},
         {d:'10 min', n:'Praia Santa Rita', s:'Baía fechada · piscina natural no canto'},
+        {d:'12 min', n:'P9 Beach Club — Toninhas', s:'Rod. Gov. Mário Covas, 753 · 9h–18h todos os dias'},
         {d:'13 min', n:'Itamambuca', s:'Praia longa de surf · rio e sombra'},
         {d:'14 min', n:'Saco da Ribeira', s:'Marina · saída das escunas · chegue 30 min antes'},
         {d:'15 min', n:'Lázaro · Domingas Dias', s:'Mar calmo · Domingas Dias só a pé por dentro do condomínio'},
         {d:'15 min', n:'Trilha das Sete Fontes', s:'Três praias numa caminhada curta'},
         {d:'19 min', n:'Praia do Félix', s:'+300 m a pé · trilhas para Português e Conchinha'},
-        {d:'22 min', n:'Prumirim — praia e cachoeira', s:'Estacionamento da cachoeira ~R$ 25'},
+        {d:'22 min', n:'Prumirim — praia, cachoeira e Jundu', s:'Estacionamento da cachoeira ~R$ 25 · Jundu fecha 18h'},
         {d:'41 min', n:'Picinguaba e Praia da Fazenda', s:'Saída das lanchas para a Ilha das Couves'}
       ]}
     ]},
@@ -135,7 +138,9 @@ export const SEED_UBATUBA = {
         {d:'Raízes', n:'Av. Leovigildo Dias Vieira, 1280 — Itaguá', s:'Todos os dias 11h30–23h30 · música ao vivo · 4,7 (5.966) · (12) 3832-3377'},
         {d:'Feito em Casa', n:'Av. Leovigildo Dias Vieira, 1180 — Itaguá', s:'Café e almoço, fecha 18h · <b>quinta fechado</b> · 4,9 (94) · (11) 99147-8240'},
         {d:'Fritz Cervejaria', n:'Rua Guarani, 345 — Itaguá', s:'A partir das 15h30 · sáb e dom a partir do meio-dia · <b>quarta fechado</b> · 4,9 (1.123)'},
-        {d:'Doca 390', n:'R. Dr. Esteves da Silva, 390 — Centro', s:'Ter a sáb 17h–00h (sex e sáb até 1h) · <b>dom e seg fechado</b> · 4,6 (812)'}
+        {d:'Doca 390', n:'R. Dr. Esteves da Silva, 390 — Centro', s:'Ter a sáb 17h–00h (sex e sáb até 1h) · <b>dom e seg fechado</b> · 4,6 (812)'},
+        {d:'Jundu Praia Bar', n:'Vereda Dez, 159 — Prumirim', s:'Bar pé na areia · <b>9h–18h todos os dias</b> · 22 min de carro · (12) 3845-3027'},
+        {d:'P9 Beach Club', n:'Rod. Gov. Mário Covas, 753 — Toninhas', s:'Beach club e japonês · <b>9h–18h todos os dias</b> · 12 min de carro · (12) 99193-6446'},
       ]},
       { h4:'Serviços', linhas:[
         {d:'Mercado', n:'Conde Supermercado — R. Cap. Felipe, 558', s:'Compra grande · 7h–22h todos os dias · (12) 3835-3143'},
