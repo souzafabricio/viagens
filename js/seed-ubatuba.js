@@ -2,7 +2,7 @@
 // Os campos de texto (fork, s, n, d, nota e itens de 'warns') aceitam HTML simples.
 
 export const SEED_UBATUBA = {
-  versao: 5,
+  versao: 6,
   nota: 'Base da viagem: <b>apartamento da família — R. João Ramalho, 90, Itaguá, Condomínio Village Côte d\'Azur (−23,4449473, −45,0734722)</b>. As distâncias são <b>estimativas</b> calculadas a partir desse endereço: confirme no Maps antes de sair, principalmente em janeiro, quando a Rio-Santos engarrafa. Horários e preços foram levantados em outubro de 2026 — reconfirme por telefone ou WhatsApp na semana da viagem.',
   dias: [
     { id:'d1', dnum:'Dia 1', titulo:'Quinta, 7 de janeiro — chegada', tag:'Viagem', cor:'',
